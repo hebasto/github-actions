@@ -1,0 +1,17 @@
+on: push
+
+jobs:
+  matrix_names:
+    name: "Matrix Pairs"
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        pair:
+          - { fruit: apple, animal: cat }
+          - { fruit: pear, animal: dog }
+
+    steps:
+      - run: |
+          echo "Running job for fruit: ${{ matrix.pair.fruit }} and animal: ${{ matrix.pair.animal }}"
+
