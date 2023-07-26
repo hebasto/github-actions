@@ -1,0 +1,16 @@
+name: CI
+on: push
+
+jobs:
+  check-xcode:
+    runs-on: macos-13
+    steps:
+      - run: clang --version
+
+      - run: xcode-select --print-path
+
+      - run: sudo xcode-select -switch /Applications/Xcode_15.1.app
+
+      - run: clang --version
+
+      - run: xcode-select --print-path
