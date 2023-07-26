@@ -1,0 +1,25 @@
+on: push
+
+jobs:
+  matrix_names:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        common_configuration:
+          - env_vars:
+              WRAPPER_CMD: 'wine'
+        job_configuration:
+          - job_name: 'x86_64 (mingw32-w64): Windows (Debian stable, Wine)'
+            env_vars:
+              HOST: 'x86_64-w64-mingw32'
+          - job_name: 'i686 (mingw32-w64): Windows (Debian stable, Wine)'
+            env_vars:
+              HOST: 'i686-w64-mingw32'
+
+    steps:
+      - run: |
+          echo "Running job for fruit: ${{ matrix.job_configuration.job_name }}"
+          echo "WRAPPER_CMD: ${{ matrix.common_configuration.env_vars.WRAPPER_CMD }}"
+          echo "HOST: ${{ matrix.job_configuration.env_vars.HOST }}"
