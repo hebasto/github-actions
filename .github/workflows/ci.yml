@@ -1,0 +1,9 @@
+on: push
+
+jobs:
+  msvc:
+    runs-on: windows-latest
+
+    steps:
+      - run: |
+          dir "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/"
