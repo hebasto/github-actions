@@ -1,0 +1,14 @@
+name: CI
+on: [pull_request, push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: python3 --version
+
+      - run: |
+          import hashlib
+          print(hashlib.algorithms_available)
+        shell: python
