@@ -1,0 +1,15 @@
+on: push
+
+env:
+  VAR_1: one
+  VAR_2: two
+
+jobs:
+  print_env:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ env.VAR_1 }}
+      - run: echo ${{ env.VAR_2 }}
+      - run: echo ${{ env }}
+      # - run: echo ${{ toJSON(env) }}
+      - run: echo ${{ fromJSON(env) }}
