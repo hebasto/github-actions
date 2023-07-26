@@ -1,0 +1,49 @@
+on: push
+
+env:
+  VAR_GLOBAL: global value
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    env:
+      VAR_JOB: job_value
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: docker/build-push-action@v4
+        with:
+          file: ./Dockerfile
+          tags: ci-image
+          push: false
+          load: true
+
+      - run: |
+          echo -------------------
+          echo '${{ toJSON(env) }}' | jq -r 'to_entries | .[] | "\(.key)=\"\(.value)\""'
+          echo -------------------
+          echo '${{ toJSON(env) }}' | jq -r 'keys[] | "-e \(.)"' | paste -sd " "
+          echo -------------------
+          env | sort
+          ls -l ${{ github.workspace }}
+
+      # - run: >
+      #     docker run \
+      #       $(echo '${{ toJSON(env) }}' | jq -r 'keys[] | "-e \(.)"' | paste -sd " ") \
+      #       --volume ${{ github.workspace }}:${{ github.workspace }} \
+      #       --workdir ${{ github.workspace }} \
+      #       ci-image bash -c " \
+      #         env | sort && \
+      #         pwd && \
+      #         ls -l && \
+      #         touch heba && \
+      #         ls -l \
+      #       "
+
+      # - run: >
+      #     docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+      #       env | sort && \
+      #       pwd && \
+      #       ls -l \
+      #     "
