@@ -1,0 +1,16 @@
+on: push
+
+jobs:
+  msvc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger an error
+        continue-on-error: true
+        run: |
+          ls unknown-entity
+
+      - run: |
+          echo 'success() = ${{ success() }}'
+          echo 'cancelled() = ${{ cancelled() }}'
+          echo 'failure() = ${{ failure() }}'
