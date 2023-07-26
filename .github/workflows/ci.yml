@@ -1,0 +1,8 @@
+name: CI
+on: push
+
+jobs:
+  homebrew:
+    runs-on: macos-13
+    steps:
+      - run: brew list -1
