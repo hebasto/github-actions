@@ -1,0 +1,39 @@
+on: push
+
+jobs:
+  docker:
+    # name: 'Build image'
+    runs-on: ubuntu-latest
+
+    # https://docs.docker.com/build/ci/github-actions/share-image-jobs/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and export
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          tags: ci-image
+          outputs: type=docker,dest=/tmp/ci-image.tar
+
+      - run: |
+          ls -l /tmp/ci-image.tar
+
+      # - run: >
+      #     docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+      #       pwd && \
+      #       ls -l && \
+      #       touch heba && \
+      #       ls -l \
+      #     "
+
+      # - run: >
+      #     docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+      #       pwd && \
+      #       ls -l \
+      #     "
