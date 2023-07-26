@@ -1,0 +1,16 @@
+name: CI
+on: push
+
+jobs:
+  libqrencode:
+    runs-on: windows-2022
+    steps:
+      - run: |
+          (Get-Command -Name vcpkg -All).Source
+          vcpkg --version
+
+      - run: |
+          vcpkg --triplet x64-windows install libiconv
+
+      - run: |
+          vcpkg --triplet x64-windows-static install libiconv
