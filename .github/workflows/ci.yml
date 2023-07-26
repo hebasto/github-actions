@@ -1,0 +1,14 @@
+on: push
+
+jobs:
+  msvc:
+    runs-on: macos-13
+
+    steps:
+      - run: |
+          brew list
+
+      - run: |
+          which gcc
+          which gcc-13
+          ls -l /usr/local/bin || true
