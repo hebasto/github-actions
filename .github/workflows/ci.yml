@@ -1,0 +1,8 @@
+name: CI
+on: push
+
+jobs:
+  check-av:
+    runs-on: windows-2022
+    steps:
+      - run: Get-MpComputerStatus
