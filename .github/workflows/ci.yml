@@ -1,0 +1,13 @@
+on: push
+
+jobs:
+  matrix_names:
+    name: "Matrix Name: ${{ matrix.job_name }}"
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        job_name: ['first', 'second']
+
+    steps:
+      - run: echo '${{ matrix.job_name }}'
