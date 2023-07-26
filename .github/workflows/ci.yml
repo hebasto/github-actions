@@ -1,0 +1,10 @@
+on: push
+
+jobs:
+  valgrind:
+    runs-on: macos-13
+    steps:
+      - run: |
+          brew tap hebasto/valgrind
+          brew install --HEAD hebasto/valgrind/valgrind
+          valgrind --version
