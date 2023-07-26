@@ -1,0 +1,52 @@
+on: push
+
+jobs:
+  super_matrix:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - job_name: 'Valgrind (memcheck)'
+            env_vars:
+              # The `--error-exitcode` is required to make the test fail if valgrind found errors, otherwise it'll return 0 (https://www.valgrind.org/docs/manual/manual-core.html)
+              WRAPPER_CMD: 'valgrind --error-exitcode=42'
+              SECP256K1_TEST_ITERS: 2
+          - job_name: 'UBSan, ASan, LSan'
+            env_vars:
+              CFLAGS: '-fsanitize=undefined,address -g'
+              UBSAN_OPTIONS: 'print_stacktrace=1:halt_on_error=1'
+              ASAN_OPTIONS: 'strict_string_checks=1:detect_stack_use_after_return=1:detect_leaks=1'
+              LSAN_OPTIONS: 'use_unaligned=1'
+              SECP256K1_TEST_ITERS: 32
+        asm:
+          - env_vars:
+              ASM: 'auto'
+          - env_vars:
+              ASM: 'no'
+              ECMULTGENPRECISION: 2
+              ECMULTWINDOW: 2
+        platform:
+          - env:
+              CC: 'clang'
+          - env:
+              HOST: 'i686-linux-gnu'
+              CC: 'i686-linux-gnu-gcc'
+
+    steps:
+
+
+      - run: |
+          echo ${{ toJSON(matrix.configuration.env_vars) }}
+          echo ${{ toJSON(matrix.asm.env_vars) }}
+          printenv | sort
+
+
+    # echo "WIDEMUL=${{ matrix.env_vars.WIDEMUL }}"
+    # echo "RECOVERY=${{ matrix.env_vars.RECOVERY }}"
+    # echo "BUILD=${{ matrix.env_vars.BUILD }}"
+    # echo "WITH_VALGRIND=${{ matrix.env_vars.WITH_VALGRIND }}"
+    # echo "ECMULTGENPRECISION=${{ matrix.env_vars.ECMULTGENPRECISION }}"
+    # echo "ECMULTWINDOW=${{ matrix.env_vars.ECMULTWINDOW }}"
+
