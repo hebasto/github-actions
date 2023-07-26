@@ -1,0 +1,25 @@
+on: push
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "42" >> forty-two.txt
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: art-42
+          path: forty-two.txt
+
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "42" >> forty-two.txt
+
+      - uses: actions/download-artifact@v3
+        id: dl
+        with:
+          name: art-42
+          path: ${{ runner.temp }}
+
+      - run: echo "Path is ${{ steps.dl.outputs.download-path }}"
