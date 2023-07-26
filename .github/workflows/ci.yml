@@ -1,0 +1,26 @@
+name: CI
+on: push
+
+jobs:
+  microsoft-setup-msbuild:
+    runs-on: windows-2022
+    steps:
+      - run: Get-Command -Name cmake -All
+      - run: Get-Command -Name vcpkg -All
+
+      - uses: microsoft/setup-msbuild@v1
+
+      - run: Get-Command -Name cmake -All
+      - run: Get-Command -Name vcpkg -All
+
+
+  ilammy-msvc-dev-cmd:
+    runs-on: windows-2022
+    steps:
+      - run: Get-Command -Name cmake -All
+      - run: Get-Command -Name vcpkg -All
+
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      - run: Get-Command -Name cmake -All
+      - run: Get-Command -Name vcpkg -All
