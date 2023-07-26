@@ -1,0 +1,13 @@
+name: CI
+on: push
+
+jobs:
+  libqrencode:
+    runs-on: windows-2022
+    steps:
+      # - uses: ilammy/msvc-dev-cmd@v1
+
+      - run: |
+          (Get-Command -Name vcpkg -All).Source
+          vcpkg --version
+          vcpkg install libqrencode
