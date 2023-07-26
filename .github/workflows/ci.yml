@@ -1,0 +1,31 @@
+on: push
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: docker/build-push-action@v4
+        with:
+          file: ./Dockerfile
+          tags: ci-image
+          push: false
+          load: true
+
+      - run: |
+          ls -l ${{ github.workspace }}
+
+      - run: >
+          docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+            pwd && \
+            ls -l && \
+            touch heba && \
+            ls -l \
+          "
+
+      - run: >
+          docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+            pwd && \
+            ls -l \
+          "
