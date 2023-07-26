@@ -1,0 +1,10 @@
+on: push
+
+jobs:
+  check_cores:
+    runs-on: windows-2022
+
+    steps:
+      - run: Write-Host $env:NUMBER_OF_PROCESSORS
+
+      - run: Write-Host (Get-WmiObject Win32_Processor).NumberOfCores
