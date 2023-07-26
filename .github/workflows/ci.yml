@@ -1,0 +1,12 @@
+name: CI
+on: push
+
+jobs:
+  early-error:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          mkdir test_dir
+
+      - run: |
+          cd test_dir; cat nonexistent_file; cd ..
