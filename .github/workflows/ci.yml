@@ -19,13 +19,14 @@ jobs:
   build:
     runs-on: windows-2022
     steps:
-      - name: Demo for cmd shell
+      - name: Demo for cmd.exe shell
         # These two commands are being executed in different shells.
-        run: cd %VCPKG_INSTALLATION_ROOT% && dir
+        run: |
+          echo %PID%
+          echo %PID%
         shell: cmd
 
-      - name: Demo for default shell
+      - name: Demo for PowerShell
         run: |
-          Set-Location "$env:VCPKG_INSTALLATION_ROOT"
-          Get-ChildItem
-          git rev-parse HEAD
+          Write-Host $PID
+          Write-Host $PID
