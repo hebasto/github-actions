@@ -21,11 +21,5 @@ jobs:
     steps:
       - name: Demo for cmd shell
         # These two commands are being executed in different shells.
-        run: cd %VCPKG_INSTALLATION_ROOT% && dir
+        run: echo %VCPKG_INSTALLATION_ROOT% && cd %VCPKG_INSTALLATION_ROOT% && dir
         shell: cmd
-
-      - name: Demo for default shell
-        run: |
-          Set-Location "$env:VCPKG_INSTALLATION_ROOT"
-          Get-ChildItem
-          git rev-parse HEAD
