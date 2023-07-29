@@ -19,13 +19,8 @@ jobs:
   build:
     runs-on: windows-2022
     steps:
-      - name: Demo for cmd shell
-        # These two commands are being executed in different shells.
-        run: cd %VCPKG_INSTALLATION_ROOT% && dir
-        shell: cmd
-
-      - name: Demo for default shell
-        run: |
-          Set-Location "$env:VCPKG_INSTALLATION_ROOT"
-          Get-ChildItem
-          git rev-parse HEAD
+      # See: https://learn.microsoft.com/en-us/biztalk/technical-guides/settings-that-can-be-modified-to-improve-network-performance.
+      - run: netsh int ipv4 show dynamicport tcp
+      - run: netsh int ipv4 show dynamicport udp
+      - run: netsh int ipv6 show dynamicport tcp
+      - run: netsh int ipv6 show dynamicport udp
