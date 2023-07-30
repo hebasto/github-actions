@@ -17,15 +17,12 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    runs-on: windows-2022
+    runs-on: macos-13
     steps:
-      - name: Demo for cmd shell
-        # These two commands are being executed in different shells.
-        run: cd %VCPKG_INSTALLATION_ROOT% && dir
-        shell: cmd
+      - run: python --version
 
-      - name: Demo for default shell
+      - name: Demo for python shell
+        shell: python
         run: |
-          Set-Location "$env:VCPKG_INSTALLATION_ROOT"
-          Get-ChildItem
-          git rev-parse HEAD
+          import sys
+          print(sys.path)
