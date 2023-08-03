@@ -10,10 +10,30 @@ jobs:
         shell: cmd
 
     steps:
-      - run: where py || set ERRORLEVEL=0
+      - uses: actions/checkout@v3
 
-      - run: py --list || set ERRORLEVEL=0
+      - run: echo %PATH%
 
-      - run: where python || set ERRORLEVEL=0
+      - run: where py
 
-      - run: where python3 || set ERRORLEVEL=0
+      - run: py --list
+
+      - run: where python
+
+      - run: where python3
+
+      - run: py print-version.py
+
+      - run: py -3 print-version.py
+
+      - run: python print-version.py
+
+      - run: python3 print-version.py
+
+      - run: py --version
+
+      - run: py -3 --version
+
+      - run: python --version
+
+      - run: python3 --version
