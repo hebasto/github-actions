@@ -37,3 +37,14 @@ jobs:
       - run: python --version
 
       - run: python3 --version
+
+      - run: |
+          #!/usr/bin/env python3
+          import sys
+          print(f"Python Version: {sys.version}")
+        shell: python
+
+      - run: |
+          import sys
+          print(f"Python Version: {sys.version}")
+        shell: python
