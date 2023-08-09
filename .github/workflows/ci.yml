@@ -8,3 +8,5 @@ jobs:
       - run: Write-Host $env:NUMBER_OF_PROCESSORS
 
       - run: Write-Host (Get-WmiObject Win32_Processor).NumberOfCores
+
+      - run: Write-Host ([int]$env:NUMBER_OF_PROCESSORS + 1)
