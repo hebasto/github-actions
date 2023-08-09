@@ -8,8 +8,10 @@ jobs:
     strategy:
       matrix:
         pair:
-          - { fruit: apple, animal: cat }
-          - { fruit: pear, animal: dog }
+          - fruit: apple
+            animal: cat
+          - fruit: pear
+            animal: dog
 
     steps:
       - run: |
