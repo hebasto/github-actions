@@ -3,13 +3,14 @@ on: push
 env:
   VAR_1: one
   VAR_2: two
+  VAR_JSON: '{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}'
 
 jobs:
   print_env:
     runs-on: ubuntu-latest
     steps:
-      - run: echo '${{ env.VAR_1 }}'
-      - run: echo '${{ env.VAR_2 }}'
+      # - run: echo '${{ env.VAR_1 }}'
+      # - run: echo '${{ env.VAR_2 }}'
       - run: echo '${{ env }}'
-      # - run: echo ${{ toJSON(env) }}
-      - run: echo '${{ fromJSON(env) }}'
+      - run: echo ${{ fromJSON(env.VAR) }}
+      # - run: echo '${{ fromJSON(env) }}'
