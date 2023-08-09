@@ -12,5 +12,8 @@ jobs:
       # - run: echo '${{ env.VAR_1 }}'
       # - run: echo '${{ env.VAR_2 }}'
       - run: echo '${{ env }}'
-      - run: echo ${{ fromJSON(env.VAR) }}
+        env:
+          NEW_VAR: ${{ fromJSON(env.VAR) }}.include
+
+      # - run: escho ${{ fromJSON(env.VAR) }}
       # - run: echo '${{ fromJSON(env) }}'
