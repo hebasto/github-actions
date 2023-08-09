@@ -2,7 +2,7 @@ on: push
 
 jobs:
   matrix_names:
-    name: "Matrix Pairs"
+    # name: "Matrix Pairs"
     runs-on: ubuntu-latest
 
     strategy:
