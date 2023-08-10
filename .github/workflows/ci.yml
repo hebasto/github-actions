@@ -27,13 +27,17 @@ jobs:
           ls -l ${{ github.workspace }}
 
       - run: >
-          docker run -e VAR_GLOBAL -e VAR_JOB --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
-            env | sort && \
-            pwd && \
-            ls -l && \
-            touch heba && \
-            ls -l \
-          "
+          docker run \
+            $(echo '${{ toJSON(env) }}' | jq -r 'keys[] | "-e \(.)"' | paste -sd " ") \
+            --volume ${{ github.workspace }}:${{ github.workspace }} \
+            --workdir ${{ github.workspace }} \
+            ci-image bash -c " \
+              env | sort && \
+              pwd && \
+              ls -l && \
+              touch heba && \
+              ls -l \
+            "
 
       - run: >
           docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
