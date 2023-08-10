@@ -20,10 +20,8 @@ jobs:
           load: true
 
       - run: |
-          which jq
-          echo '${{ env }}'
           echo -------------------
-          echo '${{ toJSON(env) }}'
+          echo '${{ toJSON(env) }}' | jq -r 'to_entries | .[] | "\(.key)=\"\(.value)\""'
           echo -------------------
           env | sort
           ls -l ${{ github.workspace }}
