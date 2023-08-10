@@ -21,7 +21,7 @@ jobs:
 
       - run: |
           echo -------------------
-          echo '${{ toJSON(env) }}' | jq -r 'keys[] | "-e \(.)"'
+          echo '${{ toJSON(env) }}' | jq -r 'keys[] | "-e \(.)"' | paste -sd " "
           echo -------------------
           env | sort
           ls -l ${{ github.workspace }}
