@@ -21,7 +21,8 @@ jobs:
 
       - run: |
           echo -------------------
-          echo '${{ toJSON(env) }}' | jq -r 'to_entries | .[] | "\(.key)=\"\(.value)\""'
+          NEW_VAR=$(echo '${{ toJSON(env) }}' | jq -r 'to_entries | .[] | "\(.key)=\"\(.value)\""')
+          echo $NEW_VAR
           echo -------------------
           echo '${{ toJSON(env) }}' | jq -r 'keys[] | "-e \(.)"' | paste -sd " "
           echo -------------------
