@@ -21,6 +21,10 @@ jobs:
 
       - run: |
           which jq
+          echo '${{ env }}'
+          echo -------------------
+          echo '${{ toJSON(env) }}'
+          echo -------------------
           env | sort
           ls -l ${{ github.workspace }}
 
