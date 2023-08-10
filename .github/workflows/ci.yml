@@ -21,6 +21,9 @@ jobs:
 
       - run: |
           echo '${{ toJSON(env) }}'
+          echo -------------------
+          echo '${{ toJSON(env) }}' | jq -c '.'
+          echo -------------------
           JSON_VAR=$(echo '${{ toJSON(env) }}')
           echo "JSON_VAR=$JSON_VAR"
           echo -------------------
