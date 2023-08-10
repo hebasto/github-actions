@@ -18,3 +18,7 @@ jobs:
           # cache-to: type=gha,mode=min
 
       - run: docker images
+
+      - run: >
+          docker run ci-image \
+            bash -c "cat /etc/os-release"
