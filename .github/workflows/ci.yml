@@ -14,10 +14,12 @@ jobs:
           load: true
 
       - run: |
+          env | sort
           ls -l ${{ github.workspace }}
 
       - run: >
           docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+            env | sort && \
             pwd && \
             ls -l && \
             touch heba && \
