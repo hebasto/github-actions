@@ -17,10 +17,14 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=min
 
-      - run: docker images
+      - run: |
+          ls -l ${{ github.workspace }}
+          docker images
 
       - run: >
-          docker run ci-image bash -c " \
+          docker run -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+            pwd && \
+            ( ls -l ${{ github.workspace }} || true ) && \
             cat /etc/os-release && \
             ( printenv HEBA || true ) && \
             export HEBA=42 && \
