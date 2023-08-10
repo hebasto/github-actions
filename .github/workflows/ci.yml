@@ -2,7 +2,7 @@ on: push
 
 jobs:
   docker:
-    name: 'Build image'
+    # name: 'Build image'
     runs-on: ubuntu-latest
     steps:
       # - name: Set up Docker Buildx
@@ -20,5 +20,14 @@ jobs:
       - run: docker images
 
       - run: >
-          docker run ci-image \
-            bash -c "cat /etc/os-release"
+          docker run ci-image bash -c " \
+            cat /etc/os-release && \
+            ( printenv HEBA || true ) && \
+            export HEBA=42 && \
+            ( printenv HEBA || true ) \
+          "
+
+      - run: >
+          docker run ci-image bash -c " \
+            ( printenv HEBA || true ) \
+          "
