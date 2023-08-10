@@ -1,8 +1,14 @@
 on: push
 
+env:
+  VAR_GLOBAL: global value
+
 jobs:
   docker:
     runs-on: ubuntu-latest
+    env:
+      VAR_JOB: job_value
+
     steps:
       - uses: actions/checkout@v3
 
@@ -19,7 +25,7 @@ jobs:
           ls -l ${{ github.workspace }}
 
       - run: >
-          docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+          docker run -e VAR_GLOBAL -e VAR_JOB --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
             env | sort && \
             pwd && \
             ls -l && \
@@ -29,6 +35,7 @@ jobs:
 
       - run: >
           docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+            env | sort && \
             pwd && \
             ls -l \
           "
