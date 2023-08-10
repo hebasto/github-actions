@@ -20,19 +20,17 @@ jobs:
 
       - run: |
           ls -l ${{ github.workspace }}
-          docker images
 
       - run: >
-          docker run -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+          docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
             pwd && \
-            ( ls -l ${{ github.workspace }} || true ) && \
-            cat /etc/os-release && \
-            ( printenv HEBA || true ) && \
-            export HEBA=42 && \
-            ( printenv HEBA || true ) \
+            ls -l && \
+            touch heba && \
+            ls -l \
           "
 
       - run: >
-          docker run ci-image bash -c " \
-            ( printenv HEBA || true ) \
+          docker run --workdir ${{ github.workspace }} -v ${{ github.workspace }}:${{ github.workspace }} ci-image bash -c " \
+            pwd && \
+            ls -l \
           "
