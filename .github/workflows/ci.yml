@@ -8,13 +8,12 @@ jobs:
       fail-fast: false
       matrix:
         env_vars:
-          - WIDEMUL: 'int64'
-            RECOVERY: 'yes'
-          - BUILD: 'distcheck'
-            WITH_VALGRIND: 'no'
-          - ECMULTGENPRECISION: 8
-            ECMULTWINDOW: 4
-        cc: ['gcc', 'clang']
+          - { WIDEMUL: 'int64', RECOVERY: 'yes' }
+          - { BUILD: 'distcheck', WITH_VALGRIND: 'no' }
+          - { ECMULTGENPRECISION: 8, ECMULTWINDOW: 4 }
+        cc:
+          - 'gcc'
+          - 'clang'
 
     env:
       CC: ${{ matrix.cc }}
