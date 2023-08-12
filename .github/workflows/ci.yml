@@ -7,10 +7,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        configuration:
-          - env_vars: { WIDEMUL: 'int64',  RECOVERY: 'yes' }
-          - env_vars: { BUILD: 'distcheck', WITH_VALGRIND: 'no' }
-          - env_vars: { ECMULTGENPRECISION: 8, ECMULTWINDOW: 4 }
+        env_vars:
+          - WIDEMUL: 'int64'
+            RECOVERY: 'yes'
+          - BUILD: 'distcheck'
+            WITH_VALGRIND: 'no'
+          - ECMULTGENPRECISION: 8
+            ECMULTWINDOW: 4
         cc: ['gcc', 'clang']
 
     env:
@@ -18,11 +21,11 @@ jobs:
 
     steps:
       - run: |
-          echo "WIDEMUL=${{ matrix.configuration.env_vars.WIDEMUL }}"
-          echo "RECOVERY=${{ matrix.configuration.env_vars.RECOVERY }}"
-          echo "BUILD=${{ matrix.configuration.env_vars.BUILD }}"
-          echo "WITH_VALGRIND=${{ matrix.configuration.env_vars.WITH_VALGRIND }}"
-          echo "ECMULTGENPRECISION=${{ matrix.configuration.env_vars.ECMULTGENPRECISION }}"
-          echo "ECMULTWINDOW=${{ matrix.configuration.env_vars.ECMULTWINDOW }}"
+          echo "WIDEMUL=${{ matrix.env_vars.WIDEMUL }}"
+          echo "RECOVERY=${{ matrix.env_vars.RECOVERY }}"
+          echo "BUILD=${{ matrix.env_vars.BUILD }}"
+          echo "WITH_VALGRIND=${{ matrix.env_vars.WITH_VALGRIND }}"
+          echo "ECMULTGENPRECISION=${{ matrix.env_vars.ECMULTGENPRECISION }}"
+          echo "ECMULTWINDOW=${{ matrix.env_vars.ECMULTWINDOW }}"
 
           printenv CC
