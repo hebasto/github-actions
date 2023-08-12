@@ -18,13 +18,12 @@ jobs:
     env:
       CC: ${{ matrix.cc }}
 
+    env:
+      VARIABLE: 'a nice value of 42'
+
     steps:
       - run: |
-          echo "WIDEMUL=${{ matrix.env_vars.WIDEMUL }}"
-          echo "RECOVERY=${{ matrix.env_vars.RECOVERY }}"
-          echo "BUILD=${{ matrix.env_vars.BUILD }}"
-          echo "WITH_VALGRIND=${{ matrix.env_vars.WITH_VALGRIND }}"
-          echo "ECMULTGENPRECISION=${{ matrix.env_vars.ECMULTGENPRECISION }}"
-          echo "ECMULTWINDOW=${{ matrix.env_vars.ECMULTWINDOW }}"
+          echo "matrix.env_vars=${{ matrix.env_vars }}"
+          echo "matrix.env_vars=${{ toJSON(matrix.env_vars) }}"
 
           printenv CC
