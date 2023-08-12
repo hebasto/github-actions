@@ -15,11 +15,7 @@ jobs:
           - 'gcc'
           - 'clang'
 
-    env:
-      CC: ${{ matrix.cc }}
-
-    # env:
-      VARIABLE: 'a nice value of 42'
+    env: ${{ matrix.env_vars }}
 
     steps:
       - run: |
