@@ -22,13 +22,16 @@ jobs:
       - run: |
           echo -------------------
           echo '${{ toJSON(env) }}' | jq -r 'keys[] | "-e \(.)"' | paste -sd " "
+          echo '${{ toJSON(env) }}' | jq -r 'keys[] | "-e \(.)"' | paste -sd " "
           echo -------------------
           env | sort
           ls -l ${{ github.workspace }}
 
-      - run: >
+      - env:
+          STEP_VALUE: abc ... xyz
+        run: >
           docker run \
-            $(echo '${{ toJSON(env) }}' | jq -r 'keys[] | "-e \(.)"' | paste -sd " ") \
+            $(echo '${{ toJSON(env) }}' | jq -r 'keys[] | "--env \(.) "') \
             --volume ${{ github.workspace }}:${{ github.workspace }} \
             --workdir ${{ github.workspace }} \
             ci-image bash -c " \
