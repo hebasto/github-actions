@@ -12,11 +12,10 @@ jobs:
           - { BUILD: 'distcheck', WITH_VALGRIND: 'no' }
           - { ECMULTGENPRECISION: 8, ECMULTWINDOW: 4 }
         cc:
-          - 'gcc'
-          - 'clang'
+          - { CC: 'gcc' }
+          - { CC: 'clang' }
 
-    env: ${{ matrix.env_vars }}
-      CC: ${{ matrix.cc }}
+    env: ${{ matrix.env_vars matrix.cc }}
 
     steps:
       - run: |
