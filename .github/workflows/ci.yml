@@ -16,10 +16,13 @@ jobs:
           - 'clang'
 
     env: ${{ matrix.env_vars }}
+      CC: ${{ matrix.cc }}
 
     steps:
       - run: |
           echo "matrix.env_vars=${{ matrix.env_vars }}"
           echo "matrix.env_vars=${{ toJSON(matrix.env_vars) }}"
 
-          printenv CC
+          echo "WIDEMUL=$WIDEMUL"
+          echo "BUILD=$BUILD"
+
