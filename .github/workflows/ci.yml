@@ -7,24 +7,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        env_vars:
-          - { WIDEMUL: 'int64', RECOVERY: 'yes' }
-          - { BUILD: 'distcheck', WITH_VALGRIND: 'no' }
-          - { ECMULTGENPRECISION: 8, ECMULTWINDOW: 4 }
-        cc:
-          - 'gcc'
-          - 'clang'
+        - job_prefix: 'x86_64'
+          env_vars:
+            HOST: 'x86_64-w64-mingw32'
+        - job_prefix: 'i686'
+          env_vars:
+            HOST: 'i686-w64-mingw32'
 
-    env:
-      CC: ${{ matrix.cc }}
+    env: ${{ matrix.env_vars }}
 
     steps:
       - run: |
-          echo "WIDEMUL=${{ matrix.env_vars.WIDEMUL }}"
-          echo "RECOVERY=${{ matrix.env_vars.RECOVERY }}"
-          echo "BUILD=${{ matrix.env_vars.BUILD }}"
-          echo "WITH_VALGRIND=${{ matrix.env_vars.WITH_VALGRIND }}"
-          echo "ECMULTGENPRECISION=${{ matrix.env_vars.ECMULTGENPRECISION }}"
-          echo "ECMULTWINDOW=${{ matrix.env_vars.ECMULTWINDOW }}"
-
-          printenv CC
+          echo "job_prefix=${{ matrix.job_prefix }}"
