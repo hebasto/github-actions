@@ -11,6 +11,6 @@ jobs:
           ls unknown-entity
 
       - run: |
-          echo 'success() = ${{ success() }}'
+          echo '${{ success() }}'
           echo 'cancelled() = ${{ cancelled() }}'
           echo 'failure() = ${{ failure() }}'
