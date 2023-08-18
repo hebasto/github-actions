@@ -6,11 +6,14 @@ jobs:
 
     steps:
       - name: Trigger an error
+        id: trigger
         continue-on-error: true
         run: |
           ls unknown-entity
 
-      - run: |
-          echo '${{ success() }}'
-          echo 'cancelled() = ${{ cancelled() }}'
-          echo 'failure() = ${{ failure() }}'
+      - name: Results
+        # if: ${{ failure() && steps.demo.conclusion == 'failure' }}
+        if: ${{ failure()  }}
+        run: |
+          echo '${{ steps.trigger.outcome }}'
+          echo '${{ steps.trigger.conclusion }}'
