@@ -11,6 +11,12 @@ jobs:
         run: |
           ls unknown-entity
 
+      - name: Backup
+        if: steps.trigger.outcome == 'failure'
+        run: |
+          echo steps.trigger.outcome = '${{ steps.trigger.outcome }}'
+          echo steps.trigger.conclusion = '${{ steps.trigger.conclusion }}'
+
       - name: Results
         if: ${{ always()  }}
         run: |
