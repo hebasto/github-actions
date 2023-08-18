@@ -9,9 +9,9 @@ jobs:
         id: trigger
         continue-on-error: true
         run: |
-          ls unknown-entity
+          ls .
 
-      - name: Backup
+      - name: Fallback
         if: steps.trigger.outcome == 'failure'
         run: |
           echo steps.trigger.outcome = '${{ steps.trigger.outcome }}'
