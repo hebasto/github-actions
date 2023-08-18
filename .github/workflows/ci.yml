@@ -1,7 +1,7 @@
 on: push
 
 jobs:
-  msvc:
+  check-error:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,8 +12,7 @@ jobs:
           ls unknown-entity
 
       - name: Results
-        # if: ${{ failure() && steps.demo.conclusion == 'failure' }}
-        if: ${{ failure()  }}
+        if: ${{ always()  }}
         run: |
           echo '${{ steps.trigger.outcome }}'
           echo '${{ steps.trigger.conclusion }}'
