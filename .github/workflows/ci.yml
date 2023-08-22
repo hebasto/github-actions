@@ -40,7 +40,7 @@ jobs:
       - run: |
           echo '${{ toJSON(matrix.configuration.env_vars) }}'
           echo '${{ toJSON(matrix.asm.env_vars) }}'
-          echo '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }}' | jq -s '.[0] * .[1]'
+          echo '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }}' | jq -s 'add'
           printenv | sort
 
 
