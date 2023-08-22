@@ -41,7 +41,7 @@ jobs:
           echo '${{ toJSON(matrix.configuration.env_vars) }}'
           echo '${{ toJSON(matrix.asm.env_vars) }}'
           echo '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }}' | jq -s 'add'
-          merged_json=$(jq -s 'add' <<< '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }}')
+          merged_json=$(jq -s 'add' <<< '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }}' | jq -c '.')
           echo "$merged_json"
 
 
