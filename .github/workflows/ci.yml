@@ -28,22 +28,21 @@ jobs:
               ECMULTGENPRECISION: 2
               ECMULTWINDOW: 2
         platform:
-          - env:
+          - env_vars:
               CC: 'clang'
-          - env:
+          - env_vars:
               HOST: 'i686-linux-gnu'
               CC: 'i686-linux-gnu-gcc'
 
     steps:
-
+      - run: |
+          merged=$(jq -s 'add' <<< '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }}' | jq -c '.')
+          for var in "$(echo $merged | jq -r 'to_entries | .[] | "\(.key)=\(.value)"')"; do
+            echo "$var" >> "$GITHUB_ENV"
+          done
 
       - run: |
-          echo '${{ toJSON(matrix.configuration.env_vars) }}'
-          echo '${{ toJSON(matrix.asm.env_vars) }}'
-          echo '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }}' | jq -s 'add'
-          merged_json=$(jq -s 'add' <<< '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }}' | jq -c '.')
-          echo "$merged_json"
-
+          printenv | sort
 
     # echo "WIDEMUL=${{ matrix.env_vars.WIDEMUL }}"
     # echo "RECOVERY=${{ matrix.env_vars.RECOVERY }}"
