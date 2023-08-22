@@ -38,8 +38,8 @@ jobs:
 
 
       - run: |
-          echo ${{ toJSON(matrix.configuration.env_vars) }}
-          echo ${{ toJSON(matrix.asm.env_vars) }}
+          echo '${{ toJSON(matrix.configuration.env_vars) }}'
+          echo '${{ toJSON(matrix.asm.env_vars) }}'
           printenv | sort
 
 
