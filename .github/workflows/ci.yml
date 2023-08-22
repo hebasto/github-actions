@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - run: |
-          for var in "$(echo $(jq -s 'add' <<< '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }} ${{ toJSON(matrix.platform.env_vars) }}' | jq -c '.') | jq -r 'to_entries | .[] | "\(.key)=\(.value)"')"; do
+          for var in "$(jq -s 'add' <<< '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }} ${{ toJSON(matrix.platform.env_vars) }}' | jq -r 'to_entries | .[] | "\(.key)=\(.value)"')"; do
             echo "$var" >> "$GITHUB_ENV"
           done
 
