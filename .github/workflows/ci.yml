@@ -41,7 +41,8 @@ jobs:
           echo '${{ toJSON(matrix.configuration.env_vars) }}'
           echo '${{ toJSON(matrix.asm.env_vars) }}'
           echo '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }}' | jq -s 'add'
-          printenv | sort
+          merged_json=$(jq -s 'add' <<< '${{ toJSON(matrix.configuration.env_vars) }} ${{ toJSON(matrix.asm.env_vars) }}')
+          echo "$merged_json"
 
 
     # echo "WIDEMUL=${{ matrix.env_vars.WIDEMUL }}"
