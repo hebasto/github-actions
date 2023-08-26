@@ -8,3 +8,6 @@ jobs:
           brew tap hebasto/valgrind
           brew install --HEAD hebasto/valgrind/valgrind
           valgrind --version
+
+      - run: |
+          valgrind ls
