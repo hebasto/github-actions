@@ -10,4 +10,4 @@ jobs:
           valgrind --version
 
       - run: |
-          valgrind ls
+          valgrind --gen-suppressions=all ls
