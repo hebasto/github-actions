@@ -6,7 +6,7 @@ jobs:
     steps:
       - run: |
           brew tap hebasto/valgrind
-          brew install --HEAD hebasto/valgrind/valgrind
+          brew install hebasto/valgrind/valgrind@230826-ventura-supp
           valgrind --version
 
       - run: |
