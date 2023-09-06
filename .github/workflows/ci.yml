@@ -14,6 +14,7 @@ jobs:
         shell: python
 
       - run: |
+          openssl version
           openssl version -d
           cat /usr/lib/ssl/openssl.cnf
 
@@ -22,3 +23,8 @@ jobs:
 
       - run: |
           cat /usr/lib/ssl/openssl.cnf
+
+      - run: |
+          import hashlib
+          print(hashlib.algorithms_available)
+        shell: python
