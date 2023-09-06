@@ -20,6 +20,8 @@ jobs:
 
       - run: |
           sudo sed -i '/default = default_sect/a\legacy = legacy_sect' /usr/lib/ssl/openssl.cnf
+          sudo echo "[legacy_sect]" >> /usr/lib/ssl/openssl.cnf
+          sudo echo "activate = 1" >> /usr/lib/ssl/openssl.cnf
 
       - run: |
           cat /usr/lib/ssl/openssl.cnf
