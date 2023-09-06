@@ -1,5 +1,5 @@
---- a/usr/lib/ssl/openssl.cnf
-+++ b/usr/lib/ssl/openssl.cnf
+--- /usr/lib/ssl/openssl.cnf
++++ /usr/lib/ssl/openssl.cnf
 @@ -57,6 +57,7 @@
  # List of providers to load
  [provider_sect]
