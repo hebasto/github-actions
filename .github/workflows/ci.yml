@@ -21,7 +21,7 @@ jobs:
           cat /usr/lib/ssl/openssl.cnf
 
       - run: |
-          sudo patch --verbose -p0 -i ci/openssl.cnf.patch
+          sudo patch --verbose -d/ -p0 -i ci/openssl.cnf.patch
 
       # - run: |
       #     sudo sed -i '/default = default_sect/a\legacy = legacy_sect' /usr/lib/ssl/openssl.cnf
