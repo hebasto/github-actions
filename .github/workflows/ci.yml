@@ -16,3 +16,9 @@ jobs:
       - run: |
           openssl version -d
           cat /usr/lib/ssl/openssl.cnf
+
+      - run: |
+          sudo sed -i '/default = default_sect/a\legacy = legacy_sect' /usr/lib/ssl/openssl.cnf
+
+      - run: |
+          cat /usr/lib/ssl/openssl.cnf
