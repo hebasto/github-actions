@@ -16,8 +16,8 @@ jobs:
       - uses: actions/checkout@v4      
 
       - run: |
-          apt-get update
-          apt-get install -y python3
+          which python || true
+          which python3 || true
 
       - run: |
           python3 ci/test.py
