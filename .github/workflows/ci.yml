@@ -4,47 +4,15 @@ on: [pull_request, push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: debian:stable
 
     steps:
-      - uses: actions/checkout@v4
-
-      - run: python3 --version
+      - run: |
+          apt-get update
+          apt-get install -y python3
 
       - run: |
-          import hashlib
-          print(hashlib.algorithms_available)
-        shell: python
-
-      - run: |
-          openssl version
-          openssl version -d
-          cat /usr/lib/ssl/openssl.cnf
-
-      - run: |
-          sudo patch /etc/ssl/openssl.cnf ci/openssl.cnf.patch
-
-      # - run: |
-      #     sudo sed -i '/default = default_sect/a\legacy = legacy_sect' /usr/lib/ssl/openssl.cnf
-      #     echo "" | sudo tee -a /usr/lib/ssl/openssl.cnf
-      #     echo "[default_sect]" | sudo tee -a /usr/lib/ssl/openssl.cnf
-      #     echo "activate = 1" | sudo tee -a /usr/lib/ssl/openssl.cnf
-      #     echo "" | sudo tee -a /usr/lib/ssl/openssl.cnf
-      #     echo "[legacy_sect]" | sudo tee -a /usr/lib/ssl/openssl.cnf
-      #     echo "activate = 1" | sudo tee -a /usr/lib/ssl/openssl.cnf
-
-      - run: |
-          cat /usr/lib/ssl/openssl.cnf
-
-      - run: |
-          import hashlib
-          print(hashlib.algorithms_available)
-        shell: python
-
-      - run: |
-          sudo apt-get update
-          sudo apt-get install libssl-dev
-
-      - run: |
+          #!/usr/bin/env python3
           import hashlib
           import sys
           print(hashlib.algorithms_available)
