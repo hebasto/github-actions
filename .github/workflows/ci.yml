@@ -45,6 +45,7 @@ jobs:
           sudo apt-get install libssl-dev
 
       - run: |
+          #!/usr/bin/env python3
           import hashlib
           print(hashlib.algorithms_available)
         shell: python
