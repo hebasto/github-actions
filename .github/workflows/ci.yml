@@ -12,3 +12,7 @@ jobs:
           import hashlib
           print(hashlib.algorithms_available)
         shell: python
+
+      - run: |
+          openssl version -d
+          cat /usr/lib/ssl/openssl.cnf
