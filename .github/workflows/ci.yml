@@ -39,3 +39,12 @@ jobs:
           import hashlib
           print(hashlib.algorithms_available)
         shell: python
+
+      - run: |
+          sudo apt-get update
+          sudo apt-get install libssl-dev
+
+      - run: |
+          import hashlib
+          print(hashlib.algorithms_available)
+        shell: python
