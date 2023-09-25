@@ -7,6 +7,6 @@ jobs:
     steps:
       - run: Get-MpComputerStatus
 
-      - run: Set-MpPreference -DisableRealtimeMonitoring $true
-
-      - run: Get-MpComputerStatus
+      - run: |
+          Set-MpPreference -DisableRealtimeMonitoring $true
+          Get-MpComputerStatus
