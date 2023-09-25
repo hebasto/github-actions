@@ -6,3 +6,7 @@ jobs:
     runs-on: windows-2022
     steps:
       - run: Get-MpComputerStatus
+
+      - run: Set-MpPreference -DisableRealtimeMonitoring $true
+
+      - run: Get-MpComputerStatus
