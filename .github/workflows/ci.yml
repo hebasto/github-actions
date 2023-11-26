@@ -17,17 +17,19 @@ jobs:
   ilammy-msvc-dev-cmd:
     runs-on: windows-2022
     steps:
-      - run: Get-Command -Name cmake -All
-      - run: Get-Command -Name vcpkg -All
+      - run: (Get-Command -Name cmake -All).Source
+      - run: (Get-Command -Name vcpkg -All).Source
 
       - uses: ilammy/msvc-dev-cmd@v1
 
-      - run: Get-Command -Name cmake -All
-      - run: Get-Command -Name vcpkg -All
+      - run: |
+          (Get-Command -Name cmake -All).Source
+          Remove-Item -Path "$env:ProgramFiles/CMake" -Recurse -Force
+          (Get-Command -Name cmake -All).Source
+          cmake --version
 
       - run: |
+          (Get-Command -Name vcpkg -All).Source
           Remove-Item -Path "$env:VCPKG_INSTALLATION_ROOT" -Recurse -Force
-          Remove-Item -Path "$env:ProgramFiles/CMake" -Recurse -Force
-
-      - run: (Get-Command -Name cmake -All).Source
-      - run: (Get-Command -Name vcpkg -All).Source
+          (Get-Command -Name vcpkg -All).Source
+          vcpkg --version
