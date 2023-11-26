@@ -29,5 +29,5 @@ jobs:
           Remove-Item -Path "$env:VCPKG_INSTALLATION_ROOT" -Recurse -Force
           Remove-Item -Path "$env:ProgramFiles/CMake" -Recurse -Force
 
-      - run: Get-Command -Name cmake -All
-      - run: Get-Command -Name vcpkg -All
+      - run: (Get-Command -Name cmake -All).Source
+      - run: (Get-Command -Name vcpkg -All).Source
