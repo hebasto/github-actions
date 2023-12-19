@@ -1,0 +1,13 @@
+name: CI
+on: push
+
+jobs:
+  check-os:
+    name: "Hello macOS"
+    runs-on: macos-13
+    steps:
+      - run: uname -m
+      - run: printenv | grep RUNNER_ARCH
+
+      - run: |
+          brew install qt@5
