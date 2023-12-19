@@ -1,0 +1,11 @@
+name: CI
+on: push
+
+jobs:
+  check-os:
+    runs-on: macos-14
+    steps:
+      - run: uname -m
+      - run: printenv
+      - run: printenv | grep -i arm
+      - run: printenv | grep -i aarch
