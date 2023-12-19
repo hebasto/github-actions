@@ -1,0 +1,10 @@
+name: CI
+on: push
+
+jobs:
+  check-os:
+    name: "Hello macOS ${{ env.RUNNER_ARCH }}"
+    runs-on: macos-14
+    steps:
+      - run: uname -m
+      - run: printenv | grep -i arm
