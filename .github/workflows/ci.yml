@@ -1,0 +1,10 @@
+name: CI
+on: push
+
+jobs:
+  check-os:
+    name: "Hello macOS"
+    runs-on: macos-13
+    steps:
+      - run: |
+          pip3 install --user pyzmq
