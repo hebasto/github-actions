@@ -1,0 +1,10 @@
+name: CI
+on: push
+
+jobs:
+  check-os:
+    name: "Hello macOS"
+    runs-on: macos-12
+    steps:
+      - run: uname -m
+      - run: printenv | grep RUNNER_ARCH
