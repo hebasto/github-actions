@@ -1,0 +1,51 @@
+name: CI
+on: push
+
+jobs:
+  macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "macos-13", "macos-14"]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: |
+          which python || true
+          ls -l $(which python) || true
+          python -VV || true
+          which python3 || true
+          ls -l $(which python3) || true
+          python3 -VV || true
+
+      - run: |
+          which pip3 || true
+          ls -l $(which pip3) || true
+
+      - run: |
+          brew list | grep python
+          brew info python@3.11
+          brew info python@3.12
+
+      - run: |
+          brew install python@3 || brew link --overwrite python@3
+
+      - run: |
+          brew list | grep python
+          brew info python@3.11
+          brew info python@3.12
+
+      - run: |
+          which python || true
+          ls -l $(which python) || true
+          python -VV || true
+          which python3 || true
+          ls -l $(which python3) || true
+          python3 -VV || true
+
+      - run: |
+          which pip3 || true
+          ls -l $(which pip3) || true
+
+      - run: |
+          pip3 install --user pyzmq
