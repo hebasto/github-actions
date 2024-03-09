@@ -10,4 +10,7 @@ jobs:
           brew uninstall --ignore-dependencies python python3 python@3 python@3.12
 
       - run: |
+          rm /usr/local/bin/2to3
+
+      - run: |
           brew install python@3.12
