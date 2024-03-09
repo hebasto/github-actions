@@ -10,4 +10,5 @@ jobs:
       - run: printenv | grep RUNNER_ARCH
 
       - run: |
+          brew install python@3.12
           brew install qt@5
