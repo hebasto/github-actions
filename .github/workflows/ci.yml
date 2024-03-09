@@ -7,7 +7,7 @@ jobs:
     runs-on: macos-13
     steps:
       - run: |
-          brew uninstall --ignore-dependencies python@3.12
+          brew uninstall --ignore-dependencies python python3 python@3 python@3.12
 
       - run: |
           brew install python@3.12
