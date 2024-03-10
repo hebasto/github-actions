@@ -7,4 +7,7 @@ jobs:
     runs-on: macos-13
     steps:
       - run: |
+          brew install python@3 || brew link --overwrite python@3
+
+      - run: |
           pip3 install --user pyzmq
