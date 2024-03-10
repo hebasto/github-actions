@@ -7,15 +7,23 @@ jobs:
     runs-on: macos-13
     steps:
       - run: |
-          which pip
+          python -VV || true
+          python3 -VV || true
+
+      - run: |
           which pip3
+          ls -l /usr/local/bin/pip3
 
       - run: |
           brew install python@3 || brew link --overwrite python@3
 
       - run: |
-          which pip
+          python -VV || true
+          python3 -VV || true
+
+      - run: |
           which pip3
+          ls -l /usr/local/bin/pip3
 
       - run: |
           pip3 install --user pyzmq
