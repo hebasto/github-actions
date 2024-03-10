@@ -23,6 +23,11 @@ jobs:
           brew install python@3 || brew link --overwrite python@3
 
       - run: |
+          brew list | grep python
+          brew info python@3.11
+          brew info python@3.12
+
+      - run: |
           python -VV || true
           python3 -VV || true
 
