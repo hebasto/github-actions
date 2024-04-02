@@ -5,6 +5,8 @@ jobs:
   vcpkg:
     runs-on: windows-2022
     steps:
+      - uses: ilammy/msvc-dev-cmd@v1
+
       - run: |
           Write-Host "$env:VCPKG_ROOT"
 
