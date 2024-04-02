@@ -6,7 +6,10 @@ jobs:
     runs-on: windows-2022
     steps:
       - run: |
+          Write-Host "$env:VCPKG_ROOT"
+
+      - run: |
           Get-ChildItem "$env:VCPKG_ROOT"
+
+      - run: |
           Get-ChildItem "$env:VCPKG_ROOT\ports"
-          Get-ChildItem "$env:VCPKG_ROOT\ports\liblzma"
-          Get-ChildItem "$env:VCPKG_ROOT\ports\liblzma\portfile.cmake"
