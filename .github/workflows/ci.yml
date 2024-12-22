@@ -1,0 +1,11 @@
+name: CI
+on: push
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - shell: bash
+        run: |
+          which -a which
+          which -a sed
