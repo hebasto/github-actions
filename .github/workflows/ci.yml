@@ -1,0 +1,19 @@
+name: CI
+on: push
+
+jobs:
+  netbsd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start NetBSD VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          envs: 'CCACHE_COMPILERCHECK CCACHE_DIR CCACHE_MAXSIZE'
+          prepare: |
+            /usr/sbin/pkg_add cmake
+          run: |
+            cd ${{ github.workspace }}
+            cmake -B build
