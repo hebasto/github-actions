@@ -1,0 +1,19 @@
+name: CI
+on: push
+
+jobs:
+  netbsd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start NetBSD VM
+        uses: vmactions/netbsd-vm@v1
+
+      - run: |
+          printenv PATH
+          which -a sysctl
+          /sbin/sysctl -n hw.ncpu || true
+          sysctl -n hw.ncpu || true
+        shell: netbsd {0}
