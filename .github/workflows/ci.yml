@@ -1,0 +1,19 @@
+name: CI
+on: push
+
+jobs:
+  netbsd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start NetBSD VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          sync: sshfs
+
+      - run: |
+          cd $GITHUB_WORKSPACE
+          pwd
+        shell: netbsd {0}
