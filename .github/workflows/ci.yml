@@ -1,0 +1,14 @@
+name: CI
+on: push
+
+jobs:
+  Fedora-UCRT:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    env:
+      CI_HOST: x86_64-w64-mingw32ucrt
+    steps:
+      - uses: actions/checkout@v2
+      - run: dnf install -y cmake ucrt64-gcc-c++
+      - run: /usr/bin/${{ env.CI_HOST }}-gcc --version
+      - run: cmake -B build -DCMAKE_C_COMPILER=/usr/bin/${{ env.CI_HOST }}-gcc -DCMAKE_SYSTEM_NAME=Windows
