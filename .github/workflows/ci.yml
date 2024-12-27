@@ -1,0 +1,32 @@
+name: CI
+on: push
+
+jobs:
+  FreeBSD:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['13.4', '14.2', '15.0']
+    steps:
+      - uses: actions/checkout@v2
+      - name: Start FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          prepare: pkg install -y autoconf automake bash cmake libtool
+          sync: 'rsync'
+          copyback: false
+          run: |
+            pwd
+            ls -lah
+            whoami
+            env
+            freebsd-version
+            sysctl hw.model
+            sysctl hw.ncpu
+            sysctl hw.physmem
+            sysctl hw.usermem
+            c++ -v || true
+            which -a c++
+            ls -l $(which c++)
