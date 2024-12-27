@@ -11,7 +11,7 @@ jobs:
       - name: Start NetBSD VM
         uses: vmactions/netbsd-vm@v1
         with:
-          sync: sshfs
+          sync: nfs
 
       - run: |
           cd $GITHUB_WORKSPACE
