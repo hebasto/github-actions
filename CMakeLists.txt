@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.22)
+project(Test CXX)
+enable_testing()
+add_executable(test_exception test_exception.cpp)
+add_test(NAME test_exception COMMAND test_exception)
+add_executable(test_pass test_pass.cpp)
+add_test(NAME test_pass COMMAND test_pass)
