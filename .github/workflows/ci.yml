@@ -1,0 +1,19 @@
+name: CI
+on: push
+
+jobs:
+  FreeBSD:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['14.4', '15.1']
+    steps:
+      - name: Start FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          run: |
+            freebsd-version
+            df -T
