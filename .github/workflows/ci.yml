@@ -9,7 +9,8 @@ jobs:
       - run: |
           Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(42)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
 
   windows-default-plus:
@@ -21,7 +22,8 @@ jobs:
           Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           $ErrorActionPreference = 'Stop'
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(42)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
 
   windows-pwsh:
@@ -30,7 +32,8 @@ jobs:
       - run: |
           Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(42)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
         shell: pwsh
 
@@ -41,7 +44,8 @@ jobs:
           Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           $ErrorActionPreference = 'Stop'
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(42)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
         shell: pwsh
 
@@ -51,7 +55,8 @@ jobs:
       - run: |
           Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(42)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
         shell: powershell
 
@@ -62,7 +67,8 @@ jobs:
           Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           $ErrorActionPreference = 'Stop'
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(42)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
         shell: powershell
 
