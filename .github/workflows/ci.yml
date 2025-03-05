@@ -7,7 +7,8 @@ jobs:
     steps:
       - run: |
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(1)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
 
   windows-default-plus:
@@ -16,7 +17,8 @@ jobs:
       - run: |
           $ErrorActionPreference = 'Stop'
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(1)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
 
   windows-pwsh:
@@ -24,7 +26,8 @@ jobs:
     steps:
       - run: |
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(1)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
         shell: pwsh
 
@@ -34,7 +37,8 @@ jobs:
       - run: |
           $ErrorActionPreference = 'Stop'
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(1)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
         shell: pwsh
 
@@ -43,7 +47,8 @@ jobs:
     steps:
       - run: |
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(1)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
         shell: powershell
 
@@ -53,7 +58,8 @@ jobs:
       - run: |
           $ErrorActionPreference = 'Stop'
           Write-Host "Before the error"
-          Get-Item "C:\NonExistentFile.txt"
+          py -3 -c "import sys; sys.exit(1)"
+          Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
         shell: powershell
 
