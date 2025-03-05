@@ -1,0 +1,59 @@
+name: CI
+on: push
+
+jobs:
+  windows-default:
+    runs-on: windows-latest
+    steps:
+      - run: |
+          Write-Host "Before the error"
+          Get-Item "C:\NonExistentFile.txt"
+          Write-Host "After the error"
+
+  windows-default-plus:
+    runs-on: windows-latest
+    steps:
+      - run: |
+          $ErrorActionPreference = 'Stop'
+          Write-Host "Before the error"
+          Get-Item "C:\NonExistentFile.txt"
+          Write-Host "After the error"
+
+  windows-pwsh:
+    runs-on: windows-latest
+    steps:
+      - run: |
+          Write-Host "Before the error"
+          Get-Item "C:\NonExistentFile.txt"
+          Write-Host "After the error"
+        shell: pwsh
+
+  windows-pwsh-plus:
+    runs-on: windows-latest
+    steps:
+      - run: |
+          $ErrorActionPreference = 'Stop'
+          Write-Host "Before the error"
+          Get-Item "C:\NonExistentFile.txt"
+          Write-Host "After the error"
+        shell: pwsh
+
+  windows-powershell:
+    runs-on: windows-latest
+    steps:
+      - run: |
+          Write-Host "Before the error"
+          Get-Item "C:\NonExistentFile.txt"
+          Write-Host "After the error"
+        shell: powershell
+
+  windows-powershell-plus:
+    runs-on: windows-latest
+    steps:
+      - run: |
+          $ErrorActionPreference = 'Stop'
+          Write-Host "Before the error"
+          Get-Item "C:\NonExistentFile.txt"
+          Write-Host "After the error"
+        shell: powershell
+
