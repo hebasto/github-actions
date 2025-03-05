@@ -6,34 +6,34 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
-          Write-Host "Before the error"
-          py -3 -c "import sys; sys.exit(1)"
-          Write-Host "Exit code: $LASTEXITCODE"
-          Write-Host "After the error"
-          py -3 -c "import sys; sys.exit(0)"
+          Write-Host "Before the error" && `
+          py -3 -c "import sys; sys.exit(1)" && `
+          Write-Host "Exit code: $LASTEXITCODE" && `
+          Write-Host "After the error" && `
+          py -3 -c "import sys; sys.exit(0)" && `
           Write-Host "Exit code: $LASTEXITCODE"
 
   windows-default-plus:
     runs-on: windows-latest
     steps:
       - run: |
-          $ErrorActionPreference = 'Stop'
-          Write-Host "Before the error"
-          py -3 -c "import sys; sys.exit(1)"
-          Write-Host "Exit code: $LASTEXITCODE"
-          Write-Host "After the error"
-          py -3 -c "import sys; sys.exit(0)"
+          $ErrorActionPreference = 'Stop' && `
+          Write-Host "Before the error" && `
+          py -3 -c "import sys; sys.exit(1)" && `
+          Write-Host "Exit code: $LASTEXITCODE" && `
+          Write-Host "After the error" && `
+          py -3 -c "import sys; sys.exit(0)" && `
           Write-Host "Exit code: $LASTEXITCODE"
 
   windows-pwsh:
     runs-on: windows-latest
     steps:
       - run: |
-          Write-Host "Before the error"
-          py -3 -c "import sys; sys.exit(1)"
-          Write-Host "Exit code: $LASTEXITCODE"
-          Write-Host "After the error"
-          py -3 -c "import sys; sys.exit(0)"
+          Write-Host "Before the error" && `
+          py -3 -c "import sys; sys.exit(1)" && `
+          Write-Host "Exit code: $LASTEXITCODE" && `
+          Write-Host "After the error" && `
+          py -3 -c "import sys; sys.exit(0)" && `
           Write-Host "Exit code: $LASTEXITCODE"
         shell: pwsh
 
@@ -41,12 +41,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
-          $ErrorActionPreference = 'Stop'
-          Write-Host "Before the error"
-          py -3 -c "import sys; sys.exit(1)"
-          Write-Host "Exit code: $LASTEXITCODE"
-          Write-Host "After the error"
-          py -3 -c "import sys; sys.exit(0)"
+          $ErrorActionPreference = 'Stop' && `
+          Write-Host "Before the error" && `
+          py -3 -c "import sys; sys.exit(1)" && `
+          Write-Host "Exit code: $LASTEXITCODE" && `
+          Write-Host "After the error" && `
+          py -3 -c "import sys; sys.exit(0)" && `
           Write-Host "Exit code: $LASTEXITCODE"
         shell: pwsh
 
@@ -54,11 +54,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
-          Write-Host "Before the error"
-          py -3 -c "import sys; sys.exit(1)"
-          Write-Host "Exit code: $LASTEXITCODE"
-          Write-Host "After the error"
-          py -3 -c "import sys; sys.exit(0)"
+          Write-Host "Before the error" && `
+          py -3 -c "import sys; sys.exit(1)" && `
+          Write-Host "Exit code: $LASTEXITCODE" && `
+          Write-Host "After the error" && `
+          py -3 -c "import sys; sys.exit(0)" && `
           Write-Host "Exit code: $LASTEXITCODE"
         shell: powershell
 
@@ -66,12 +66,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
-          $ErrorActionPreference = 'Stop'
-          Write-Host "Before the error"
-          py -3 -c "import sys; sys.exit(1)"
-          Write-Host "Exit code: $LASTEXITCODE"
-          Write-Host "After the error"
-          py -3 -c "import sys; sys.exit(0)"
+          $ErrorActionPreference = 'Stop' && `
+          Write-Host "Before the error" && `
+          py -3 -c "import sys; sys.exit(1)" && `
+          Write-Host "Exit code: $LASTEXITCODE" && `
+          Write-Host "After the error" && `
+          py -3 -c "import sys; sys.exit(0)" && `
           Write-Host "Exit code: $LASTEXITCODE"
         shell: powershell
 
