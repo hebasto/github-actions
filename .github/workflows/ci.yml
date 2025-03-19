@@ -1,0 +1,51 @@
+name: CI
+on: push
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cmake -B build
+          cmake --build build
+          ./build/main
+
+  macos-x86_64:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cmake -B build
+          cmake --build build
+          ./build/main
+
+  macos-arm64:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cmake -B build
+          cmake --build build
+          ./build/main
+
+  windows-msvc:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cmake -B build
+          cmake --build build --config Release
+          .\build\Release\main.exe
+
+  windows-clang-cl:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cmake -B build -T ClangCL
+          cmake --build build --config Release
+          .\build\Release\main.exe
+
+
+
