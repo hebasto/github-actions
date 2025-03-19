@@ -1,0 +1,31 @@
+name: CI
+on: push
+
+jobs:
+  omnios:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: omnios {0}
+
+    steps:
+      - name: Start OmniOS VM
+        uses: vmactions/omnios-vm@v1
+        with:
+          prepare: |
+            pkg list -H -o name,publisher,version > packages_before
+            pkg install curl cmake git gcc14
+            pkg list -H -o name,publisher,version > packages_after
+            diff -w packages_before packages_after | grep '^>'
+          sync: 'rsync'
+          copyback: false
+
+      - name: Build Boost
+        run: |
+          cd ${{ github.workspace }}
+          mkdir boost_build
+          cd boost_build
+          curl https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.tar.gz
+          ls -l
+          tar xf boost-1.88.0-cmake.tar.gz
+          ls -l
