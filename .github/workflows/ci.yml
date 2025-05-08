@@ -11,5 +11,5 @@ jobs:
           $sdk_latest = (Get-ChildItem "$sdk_dir\bin" -Directory | Where-Object { $_.Name -match '^\d+\.\d+\.\d+\.\d+$' } | Sort-Object Name -Descending | Select-Object -First 1).Name
           "MT_EXE=`"${sdk_dir}bin\${sdk_latest}\x64\mt.exe`"" >> $env:GITHUB_ENV
 
-      - shell: pwsh
-        run: & $env:MT_EXE
+      - shell: cmd
+        run: %MT_EXE%
