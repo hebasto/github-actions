@@ -12,4 +12,4 @@ jobs:
           "MT_EXE=`"$sdk_dir\bin\$sdk_latest\x64\mt.exe`"" >> $env:GITHUB_ENV
 
       - shell: pwsh
-        run: $MT_EXE
+        run: $env:MT_EXE
