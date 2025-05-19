@@ -59,6 +59,18 @@ int main()
     std::cout << "__clang__ is not defined\n";
 #endif
 
+#if defined(_GNU_SOURCE)
+    std::cout << "_GNU_SOURCE is defined: " << _GNU_SOURCE << "\n";
+#else
+    std::cout << "_GNU_SOURCE is not defined\n";
+#endif
+
+#if defined(_POSIX_C_SOURCE)
+    std::cout << "_POSIX_C_SOURCE is defined: " << _POSIX_C_SOURCE << "\n";
+#else
+    std::cout << "_POSIX_C_SOURCE is not defined\n";
+#endif
+
     std::cout << "\n";
 
 #if defined(HAVE_GETCPUID)
