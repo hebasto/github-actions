@@ -1,0 +1,11 @@
+name: New
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  dummy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo Hello World!
