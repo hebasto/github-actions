@@ -19,7 +19,7 @@ jobs:
         with:
           prepare: |
             pkg list -H -o name,publisher,version > packages_before
-            pkg install wget patch cmake git gcc14
+            pkg install wget cmake git gcc14
             pkg list -H -o name,publisher,version > packages_after
             diff -w packages_before packages_after | grep '^>'
           sync: 'rsync'
