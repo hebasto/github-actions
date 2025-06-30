@@ -31,6 +31,7 @@ jobs:
           wget -nv https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.tar.gz
           tar xf boost-1.88.0-cmake.tar.gz
           cd boost-1.88.0
-          ls -l
           patch -p1 < ${{ github.workspace }}/depends/patches/boost/skip_compiled_targets.patch
           cmake -S . -B build -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/boost" -DBOOST_INCLUDE_LIBRARIES="multi_index;signals2;test" -DBOOST_TEST_HEADERS_ONLY=ON -DBOOST_ENABLE_MPI=OFF -DBOOST_ENABLE_PYTHON=OFF -DBOOST_INSTALL_LAYOUT=system -DBUILD_TESTING=OFF -DCMAKE_DISABLE_FIND_PACKAGE_ICU=ON
+          cmake --install build
+          ls -l ${{ github.workspace }}/boost
