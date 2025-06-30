@@ -14,7 +14,7 @@ jobs:
         with:
           prepare: |
             pkg list -H -o name,publisher,version > packages_before
-            pkg install curl cmake git gcc14
+            pkg install wget cmake git gcc14
             pkg list -H -o name,publisher,version > packages_after
             diff -w packages_before packages_after | grep '^>'
           sync: 'rsync'
@@ -25,7 +25,7 @@ jobs:
           cd ${{ github.workspace }}
           mkdir boost_build
           cd boost_build
-          curl https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.tar.gz
+          wget https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.tar.gz
           ls -l
           tar xf boost-1.88.0-cmake.tar.gz
           ls -l
