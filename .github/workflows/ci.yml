@@ -2,6 +2,7 @@ name: CI
 on: push
 
 jobs:
+  # Default == pwsh, PowerShell Core 7.4.10.
   windows-default:
     runs-on: windows-latest
     steps:
@@ -14,6 +15,8 @@ jobs:
   windows-default-plus:
     runs-on: windows-latest
     steps:
+      # GHA prepends $ErrorActionPreference = 'stop' to script contents.
+      # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#exit-codes-and-error-action-preference
       - run: |
           Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           $ErrorActionPreference = 'Stop'
