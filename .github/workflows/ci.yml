@@ -6,6 +6,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
+          Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           Write-Host "Before the error"
           Get-Item "C:\NonExistentFile.txt"
           Write-Host "After the error"
@@ -14,6 +15,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
+          Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           $ErrorActionPreference = 'Stop'
           Write-Host "Before the error"
           Get-Item "C:\NonExistentFile.txt"
@@ -23,6 +25,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
+          Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           Write-Host "Before the error"
           Get-Item "C:\NonExistentFile.txt"
           Write-Host "After the error"
@@ -32,6 +35,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
+          Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           $ErrorActionPreference = 'Stop'
           Write-Host "Before the error"
           Get-Item "C:\NonExistentFile.txt"
@@ -42,6 +46,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
+          Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           Write-Host "Before the error"
           Get-Item "C:\NonExistentFile.txt"
           Write-Host "After the error"
@@ -51,6 +56,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: |
+          Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
           $ErrorActionPreference = 'Stop'
           Write-Host "Before the error"
           Get-Item "C:\NonExistentFile.txt"
