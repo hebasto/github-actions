@@ -35,7 +35,7 @@ jobs:
           py -3 -c "import sys; sys.exit(42)"
           Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
-        shell: pwsh
+        shell: pwsh -Command "$PSVersionTable; $PSNativeCommandUseErrorActionPreference = $true; $ErrorActionPreference = 'Stop'; & '{0}'"
 
   windows-pwsh-plus:
     runs-on: windows-latest
@@ -47,7 +47,7 @@ jobs:
           py -3 -c "import sys; sys.exit(42)"
           Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
-        shell: pwsh
+        shell: pwsh -Command "$PSVersionTable; $PSNativeCommandUseErrorActionPreference = $true; $ErrorActionPreference = 'Stop'; & '{0}'"
 
   windows-powershell:
     runs-on: windows-latest
@@ -58,7 +58,7 @@ jobs:
           py -3 -c "import sys; sys.exit(42)"
           Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
-        shell: powershell
+        shell: powershell -Command "$PSVersionTable; $PSNativeCommandUseErrorActionPreference = $true; $ErrorActionPreference = 'Stop'; & '{0}'"
 
   windows-powershell-plus:
     runs-on: windows-latest
@@ -70,5 +70,5 @@ jobs:
           py -3 -c "import sys; sys.exit(42)"
           Write-Host "Exit code: $LASTEXITCODE"
           Write-Host "After the error"
-        shell: powershell
+        shell: powershell -Command "$PSVersionTable; $PSNativeCommandUseErrorActionPreference = $true; $ErrorActionPreference = 'Stop'; & '{0}'"
 
