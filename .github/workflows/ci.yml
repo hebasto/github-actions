@@ -22,4 +22,5 @@ jobs:
           echo "GITHUB_REF: $GITHUB_REF"
 
       - uses: actions/checkout@v5
-
+        with:
+          ref: ${{ github.event.pull_request.number && format('refs/pull/{0}/merge', github.event.pull_request.number) || '' }}
