@@ -1,0 +1,30 @@
+name: CI
+on: push
+
+jobs:
+  NetBSD:
+    name: 'NetBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: '9.4'
+            capnproto-cppflags: '-DKJ_USE_KQUEUE=0'
+            zeromq-cppflags: '-DZMQ_NETBSD_KEVENT_UDATA_INTPTR_T=1'
+            pcre2-action: 'install'
+          - release: '10.1'
+            pcre2-action: 'replace'
+
+    steps:
+      - name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          prepare: |
+            cd /usr
+            cvs -danoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P \
+              pkgsrc/devel/capnproto
+          run: |
+            ( unset PKG_PATH; make -C /usr/pkgsrc/devel/capnproto CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install )
+          sync: nfs
