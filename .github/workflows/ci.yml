@@ -1,0 +1,42 @@
+name: CI
+on: push
+
+jobs:
+  Ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          df --human-readable
+          du -sh /usr/share/dotnet/
+          sudo rm -rf /usr/share/dotnet/
+          df --human-readable
+
+      - run: |
+          df --human-readable
+          du -sh /usr/local/.ghcup/
+          sudo rm -rf /usr/local/.ghcup/
+          df --human-readable
+
+      - run: |
+          df --human-readable
+          du -sh /usr/local/share/powershell/
+          sudo rm -rf /usr/local/share/powershell/
+          df --human-readable
+
+      - run: |
+          df --human-readable
+          du -sh /usr/local/share/chromium/
+          sudo rm -rf /usr/local/share/chromium/
+          df --human-readable
+
+      - run: |
+          df --human-readable
+          du -sh /usr/local/lib/android/
+          sudo rm -rf /usr/local/lib/android/
+          df --human-readable
+
+      - run: |
+          df --human-readable
+          du -sh /usr/local/lib/node_modules/
+          sudo rm -rf /usr/local/lib/node_modules/
+          df --human-readable
