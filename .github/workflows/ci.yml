@@ -1,0 +1,10 @@
+name: CI
+on: push
+
+jobs:
+  alpine:
+    runs-on: ubuntu-latest
+    container: alpine:latest
+
+    steps:
+      - run: pwd
