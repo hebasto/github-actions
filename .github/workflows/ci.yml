@@ -1,0 +1,42 @@
+name: CI
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      last_pr_number:
+        description: 'The last checked PR number'
+        required: false
+        default: '1'
+
+jobs:
+  pr-chain:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Identify PR to check
+        id: identify_pull_to_check
+        uses: actions/github-script@v8
+        env:
+          INPUT_LAST_PR: ${{ inputs.last_pr_number }}
+        with:
+          script: |
+            const last_pull = parseInt(process.env.INPUT_LAST_PR || '1', 10);
+            console.log(`The last checked PR number ${last_pull}`);
+
+            const all_pulls = await github.paginate(github.rest.pulls.list, {
+              owner: 'bitcoin',
+              repo: 'bitcoin',
+              state: 'open',
+              per_page: 100
+            });
+
+            const pull_numbers = all_pulls
+              .filter(pr => !pr.draft)
+              .map(pr => pr.number)
+              .sort((a, b) => a - b);
+
+            console.log(`Found ${pull_numbers.length} open, non-draft PRs.`);
+
+            const next_pull_number = pull_numbers.find(num => num > last_pull);
+
+            console.log(`The next PR to check: ${next_pull_number}`);
