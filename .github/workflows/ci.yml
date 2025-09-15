@@ -1,0 +1,20 @@
+name: CI
+on: push
+
+jobs:
+  vcpkg-hashes:
+    runs-on: windows-2025-vs2026
+
+    steps:
+      - name: Checkout Bitcoin Core repo
+        uses: actions/checkout@v7
+        with:
+          repository: bitcoin/bitcoin
+
+      - name: Update "builtin-baseline"
+        run: |
+          Write-Host "Built-in vcpkg root: $env:VCPKG_ROOT"
+          & 'C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\Tools\Launch-VsDevShell.ps1' -SkipAutomaticLocation -Arch amd64
+          Write-Host "Built-in vcpkg root: $env:VCPKG_ROOT"
+          vcpkg x-update-baseline
+          git diff
