@@ -1,0 +1,21 @@
+name: CI
+on: push
+
+jobs:
+  vcpkg-hashes:
+    runs-on: windows-latest
+
+    steps:
+      - name: Print built-in vcpkg commit hash
+        run: |
+          Write-Host "Built-in vcpkg root: $env:VCPKG_ROOT"
+          Set-Location -Path $env:VCPKG_ROOT
+          $builtin_hash = git rev-parse HEAD
+          Write-Host "Built-in vcpkg top commit hash: $builtin_hash"
+
+      - name: Print external vcpkg commit hash
+        run: |
+          Write-Host "Built-in vcpkg root: $env:VCPKG_INSTALLATION_ROOT"
+          Set-Location -Path $env:VCPKG_INSTALLATION_ROOT
+          $builtin_hash = git rev-parse HEAD
+          Write-Host "Built-in vcpkg top commit hash: $builtin_hash"
