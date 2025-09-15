@@ -1,0 +1,31 @@
+name: CI
+on: push
+
+jobs:
+  OpenIndiana:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Start OpenIndiana VM
+        uses: vmactions/openindiana-vm@v0
+        with:
+          prepare: |
+            echo "+++++++++++++++++++++++++++"
+            wget https://github.com/boostorg/boost/releases/download/boost-1.90.0/boost-1.90.0-cmake.tar.xz
+            echo "+++++++++++++++++++++++++++"
+            tar xf boost-1.90.0-cmake.tar.xz
+            echo "+++++++++++++++++++++++++++"
+            cmake -S boost-1.90.0 -B build \
+              -DBOOST_INCLUDE_LIBRARIES="multi_index;signals2;test" \
+              -DBOOST_TEST_HEADERS_ONLY=ON \
+              -DBOOST_ENABLE_MPI=OFF \
+              -DBOOST_ENABLE_PYTHON=OFF \
+              -DBOOST_INSTALL_LAYOUT=system \
+              -DBUILD_TESTING=OFF \
+              -DCMAKE_DISABLE_FIND_PACKAGE_ICU=ON
+            echo "+++++++++++++++++++++++++++"
+            cmake --build build
+            echo "+++++++++++++++++++++++++++"
+            cmake --install build
+            echo "+++++++++++++++++++++++++++"
+          sync: no
