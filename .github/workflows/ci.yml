@@ -9,7 +9,7 @@ jobs:
       - name: Start FreeBSD VM
         uses: vmactions/freebsd-vm@v1
         with:
-          prepare: pkg install -y cmake
+          prepare: pkg install -y cmake ninja
           run: cmake --version
           sync: 'rsync'
           copyback: false
@@ -19,4 +19,4 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           cat CMakeLists.txt
-          cmake -B build || ( cat CMakeFiles/CMakeConfigureLog.yaml && false )
+          cmake -B build -G Ninja || ( cat CMakeFiles/CMakeConfigureLog.yaml && false )
