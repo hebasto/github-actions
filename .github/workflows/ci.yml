@@ -1,0 +1,24 @@
+name: CI
+on: push
+
+jobs:
+  NetBSD:
+    name: 'NetBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: [9.4, 10.1]
+
+    steps:
+      - name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          run: echo "=== $PKG_PATH ==="
+          sync: no
+
+      - shell: netbsd {0}
+        run: |
+          uname -a
+          echo "=== $PKG_PATH ==="
