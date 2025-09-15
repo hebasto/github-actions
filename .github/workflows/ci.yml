@@ -1,0 +1,24 @@
+name: CI
+on: push
+
+jobs:
+  OpenBSD:
+    name: 'OpenBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['7.8', '7.9']
+
+    steps:
+      - name: Start OpenBSD ${{ matrix.release }} VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+
+      - shell: openbsd {0}
+        run: |
+          set -e
+          pkg_add cmake-core
+          cmake --version
