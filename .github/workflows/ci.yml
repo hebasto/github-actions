@@ -1,0 +1,25 @@
+name: CI
+on: push
+
+jobs:
+  NetBSD:
+    name: 'NetBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: '9.4'
+          - release: '10.1'
+
+    steps:
+      - run: |
+          free -h
+
+      - name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          mem: 18432
+          run: |
+            vmstat
