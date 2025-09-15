@@ -14,7 +14,9 @@ jobs:
           sync: 'rsync'
           copyback: false
 
-      - shell: freebsd {0}
+      - name: Run CMake
+        shell: freebsd {0}
         run: |
           cd ${{ github.workspace }}
-          cmake -B build
+          cat CMakeLists.txt
+          cmake -B build || ( cat CMakeFiles/CMakeConfigureLog.yaml && false )
