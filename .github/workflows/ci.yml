@@ -1,0 +1,13 @@
+name: CI
+on: push
+
+jobs:
+  FreeBSD:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+
+      - name: Run Loop
+        shell: freebsd {0}
+        run: i=0; while :; do echo "$i"; i=$((i+1)); sleep 60; done
