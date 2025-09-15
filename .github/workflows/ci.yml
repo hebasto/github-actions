@@ -1,0 +1,34 @@
+name: CI
+on: push
+
+jobs:
+  netbsd:
+    name: 'NetBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy: &RELEASE_MATRIX
+      fail-fast: false
+      matrix:
+        release: ['10.2', '11.0']
+
+    steps:
+      - name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          disable-cache: true
+
+      - shell: netbsd {0}
+        run: uname -a
+
+      - shell: netbsd {0}
+        run: ulimit -a
+
+      - shell: netbsd {0}
+        run: ulimit -Sn
+
+      - shell: netbsd {0}
+        run: ulimit -Hn
+
+      - shell: netbsd {0}
+        run: sysctl kern.maxfiles
