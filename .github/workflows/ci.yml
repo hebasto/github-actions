@@ -1,0 +1,10 @@
+name: CI
+on: push
+
+jobs:
+  windows:
+    runs-on: windows-11-arm
+
+    steps:
+      - shell: cmd
+        run: where clang-cl
