@@ -1,0 +1,16 @@
+name: CI
+on: push
+
+jobs:
+  OpenIndiana:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Start OpenIndiana VM
+        uses: vmactions/openindiana-vm@v0
+        with:
+          sync: no
+
+      - shell: openindiana {0}
+        run: ulimit -a
