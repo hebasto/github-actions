@@ -1,0 +1,29 @@
+name: CI
+on: push
+
+jobs:
+  OpenIndiana:
+    name: 'OpenBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start OpenIndiana VM
+        uses: vmactions/openindiana-vm@v1
+        with:
+          mem: 18432
+          prepare: |
+            set -e
+            pkg list > packages_before
+            pkg install developer/gcc-14
+            pkg list > packages_after
+            diff -w packages_before packages_after | grep '^>' || true
+          sync: no
+
+      - shell: openindiana {0}
+        name: Build SQLite
+        run: |
+          set -e
+          curl --location --fail --output sqlite-autoconf-3460100.tar.gz https://sqlite.org/2024/sqlite-autoconf-3460100.tar.gz
+          tar xf sqlite-autoconf-3460100.tar.gz
+          cd sqlite-autoconf-3460100
+          ./configure --enable-option-checking
