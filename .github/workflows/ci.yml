@@ -1,0 +1,11 @@
+name: CI
+on: push
+
+jobs:
+  windows:
+    runs-on: windows-latest
+
+    steps:
+      - run: py -3 --version
+
+      - run: py -3 -m pip install pyzmq
