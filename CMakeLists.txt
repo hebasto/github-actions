@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
-project(freebsd-threads LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.12...4.1)
+project(freebsd-threads CXX)
 set(CMAKE_CXX_STANDARD 20)
 find_package(Threads REQUIRED)
