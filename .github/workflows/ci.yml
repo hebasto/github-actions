@@ -1,0 +1,25 @@
+name: CI
+on: push
+
+jobs:
+  win:
+    runs-on: windows-latest
+
+    steps:
+      - run: |
+          Get-ChildItem
+
+      - run: |
+          New-Item -ItemType Directory -Path ".\original_folderA" | Out-Null
+          New-Item -ItemType Directory -Path ".\original_folderB" | Out-Null
+          New-Item -ItemType File -Path ".\original_fileA.txt" -Value "Sample Data A" | Out-Null
+          New-Item -ItemType File -Path ".\original_fileB.txt" -Value "Sample Data B" | Out-Null
+
+          New-Item -ItemType SymbolicLink -Path ".\symlink_folderA" -Target ".\original_folderA" | Out-Null
+          New-Item -ItemType SymbolicLink -Path ".\symlink_fileA.txt" -Target ".\original_fileA.txt" | Out-Null
+
+          New-Item -ItemType Junction -Path ".\junction_folderB" -Target (Convert-Path ".\original_folderB") | Out-Null
+          New-Item -ItemType HardLink -Path ".\hardlinkB.txt" -Target ".\original_fileB.txt" | Out-Null
+
+      - run: |
+          Get-ChildItem | Select-Object Mode, LinkType, Name, Target | Format-Table -AutoSize
