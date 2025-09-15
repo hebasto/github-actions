@@ -1,0 +1,24 @@
+name: CI
+on: push
+
+jobs:
+  OpenIndiana:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Start OpenIndiana VM
+        uses: vmactions/openindiana-vm@v0
+        with:
+          sync: no
+
+      - name: Custom shell step 1
+        shell: openindiana {0}
+        run: |
+          pwd
+          echo $0
+
+      - name: Custom shell step 2
+        shell: openindiana -c "cd cd ${{ github.workspace }} && csh {0}"
+        run: |
+          pwd
+          echo $0
