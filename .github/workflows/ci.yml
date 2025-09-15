@@ -1,0 +1,20 @@
+name: CI
+on: push
+
+jobs:
+  OpenIndiana:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Start OpenIndiana VM
+        uses: vmactions/openindiana-vm@v0
+        with:
+          prepare: |
+            echo "+++++++++++++++++++++++++++ prepare 00"
+            pkg publisher
+            echo "+++++++++++++++++++++++++++ prepare 01"
+            pkg property
+            echo "+++++++++++++++++++++++++++ prepare 02"
+            pkg install library/libevent2
+            echo "+++++++++++++++++++++++++++ prepare 03"
+          sync: no
