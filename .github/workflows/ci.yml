@@ -1,0 +1,15 @@
+name: CI
+on: push
+
+jobs:
+  NetBSD:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Start NetBSD VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          run: |
+            ls -lh ${{ runner.temp }}
+            df -h ${{ runner.temp }}
+          sync: no
