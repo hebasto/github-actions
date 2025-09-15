@@ -1,0 +1,27 @@
+name: Check
+on: push
+
+jobs:
+  netbsd:
+    name: 'NetBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: '10.1'
+
+    steps:
+      - name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg_add python313 py313-pip
+          run: |
+            which -a pip || echo "no pip"
+            which -a pip3 || echo "no pip3"
+            which -a pip3.13 || echo "no pip3.13"
+            which -a pip-3.13 || echo "no pip-3.13"
