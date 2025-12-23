@@ -10,11 +10,7 @@ jobs:
         uses: vmactions/openindiana-vm@v0
         with:
           prepare: |
-            echo "+++++++++++++++++++++++++++ prepare 00"
-            pkg publisher
-            echo "+++++++++++++++++++++++++++ prepare 01"
-            pkg property
-            echo "+++++++++++++++++++++++++++ prepare 02"
-            pkg install library/libevent2
-            echo "+++++++++++++++++++++++++++ prepare 03"
+            echo "+++++++++++++++++++++++++++"
+            pkg list
+            echo "+++++++++++++++++++++++++++"
           sync: no
