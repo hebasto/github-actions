@@ -16,9 +16,18 @@ jobs:
         run: |
           pwd
           echo $0
+          which -a sh
 
       - name: Custom shell step 2
-        shell: openindiana -c "cd $GITHUB_WORKSPACE && csh {0}"
+        shell: openindiana {0}
         run: |
           pwd
-          echo $0
+          cd ${{ github.workspace }}
+          pwd
+
+      - name: Custom shell step 3
+        shell: openindiana {0}
+        run: |
+          pwd
+          cd $GITHUB_WORKSPACE
+          pwd
