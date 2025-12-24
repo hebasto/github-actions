@@ -14,20 +14,8 @@ jobs:
       - name: Custom shell step 1
         shell: openindiana {0}
         run: |
-          pwd
-          echo $0
-          which -a sh
-
-      - name: Custom shell step 2
-        shell: openindiana {0}
-        run: |
-          pwd
-          cd ${{ github.workspace }}
-          pwd
-
-      - name: Custom shell step 3
-        shell: openindiana {0}
-        run: |
-          pwd
-          cd $GITHUB_WORKSPACE
-          pwd
+          echo ONE...
+          false
+          echo TWO...
+          false
+          echo THREE...
