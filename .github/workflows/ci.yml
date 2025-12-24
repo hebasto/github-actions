@@ -11,7 +11,7 @@ jobs:
         with:
           prepare: |
             echo "+++++++++++++++++++++++++++"
-            wget --progress=dot https://github.com/boostorg/boost/releases/download/boost-1.90.0/boost-1.90.0-cmake.tar.xz
+            wget --progress=dot:mega https://github.com/boostorg/boost/releases/download/boost-1.90.0/boost-1.90.0-cmake.tar.xz
             echo "+++++++++++++++++++++++++++"
             tar xf boost-1.90.0-cmake.tar.xz
             echo "+++++++++++++++++++++++++++"
