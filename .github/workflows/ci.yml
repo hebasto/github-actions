@@ -18,7 +18,7 @@ jobs:
           echo $0
 
       - name: Custom shell step 2
-        shell: openindiana -c "cd cd ${{ github.workspace }} && csh {0}"
+        shell: openindiana -c "cd $GITHUB_WORKSPACE && csh {0}"
         run: |
           pwd
           echo $0
