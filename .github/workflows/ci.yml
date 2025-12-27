@@ -10,19 +10,12 @@ jobs:
         uses: vmactions/netbsd-vm@v1
         with:
           prepare: |
-            echo "+++++++++++++++++++++++++++ prepare 00"
-            echo $PKG_PATH
-            echo "+++++++++++++++++++++++++++ prepare 01"
-            ls -l /usr/
-            echo "+++++++++++++++++++++++++++ prepare 02a"
-            ls -l /usr/pkg/devel
-            echo "+++++++++++++++++++++++++++ prepare 02b"
+            pkg_admin -K /usr/pkg/pkgdb fetch-pkg-vulnerabilities
             ftp https://cdn.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.xz
-            echo "+++++++++++++++++++++++++++ prepare 03a"
-            tar -xzf pkgsrc.tar.xz -C /usr/
-            echo "+++++++++++++++++++++++++++ prepare 03b"
-            ls -l /usr/pkg/devel
-            echo "+++++++++++++++++++++++++++ prepare 04"
+            echo "+++++++++++++++++++++++++++ prepare 00"
+            pkg_delete pcre2 || true
+            echo "+++++++++++++++++++++++++++ prepare 01"
+            tar -xf pkgsrc.tar.xz -C /usr/
             env -u PKG_PATH make -C /usr/pkgsrc/devel/pcre2/ install
             echo "+++++++++++++++++++++++++++ prepare 05"
             pkg_info > packages_before
