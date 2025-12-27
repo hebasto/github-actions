@@ -17,12 +17,11 @@ jobs:
             echo "+++++++++++++++++++++++++++ prepare 02a"
             ls -l /usr/pkg/devel
             echo "+++++++++++++++++++++++++++ prepare 02b"
-            which -a ftp
-            ftp https://ftp.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.xz
+            ftp https://cdn.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.xz
             echo "+++++++++++++++++++++++++++ prepare 03a"
-            tar -xzf pkgsrc.tar.gz -C /usr/
+            tar -xzf pkgsrc.tar.xz -C /usr/
             echo "+++++++++++++++++++++++++++ prepare 03b"
-            ls -l /usr/
+            ls -l /usr/pkg/devel
             echo "+++++++++++++++++++++++++++ prepare 04"
             env -u PKG_PATH make -C /usr/pkgsrc/devel/pcre2/ install
             echo "+++++++++++++++++++++++++++ prepare 05"
