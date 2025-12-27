@@ -14,10 +14,14 @@ jobs:
             echo $PKG_PATH
             echo "+++++++++++++++++++++++++++ prepare 01"
             ls -l /usr/
-            echo "+++++++++++++++++++++++++++ prepare 02"
+            echo "+++++++++++++++++++++++++++ prepare 02a"
+            ls -l /usr/pkg/devel
+            echo "+++++++++++++++++++++++++++ prepare 02b"
+            which -a ftp
             ftp https://cdn.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.xz
+            echo "+++++++++++++++++++++++++++ prepare 03a"
             tar -xzf pkgsrc.tar.gz -C /usr/
-            echo "+++++++++++++++++++++++++++ prepare 03"
+            echo "+++++++++++++++++++++++++++ prepare 03b"
             ls -l /usr/
             echo "+++++++++++++++++++++++++++ prepare 04"
             env -u PKG_PATH make -C /usr/pkgsrc/devel/pcre2/ install
