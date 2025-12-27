@@ -10,12 +10,24 @@ jobs:
         uses: vmactions/netbsd-vm@v1
         with:
           prepare: |
-            pkg_info > packages_before
             echo "+++++++++++++++++++++++++++ prepare 00"
-            pkg_add git
+            echo $PKG_PATH
             echo "+++++++++++++++++++++++++++ prepare 01"
-            pkg_info > packages_after
+            ls -l /usr/
             echo "+++++++++++++++++++++++++++ prepare 02"
-            diff -w packages_before packages_after | grep '^>'
+            ftp https://cdn.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.xz
+            tar -xzf pkgsrc.tar.gz -C /usr/
             echo "+++++++++++++++++++++++++++ prepare 03"
+            ls -l /usr/
+            echo "+++++++++++++++++++++++++++ prepare 04"
+            env -u PKG_PATH make -C /usr/pkgsrc/devel/pcre2/ install
+            echo "+++++++++++++++++++++++++++ prepare 05"
+            pkg_info > packages_before
+            echo "+++++++++++++++++++++++++++ prepare 06"
+            pkg_add git-base
+            echo "+++++++++++++++++++++++++++ prepare 07"
+            pkg_info > packages_after
+            echo "+++++++++++++++++++++++++++ prepare 08"
+            diff -w packages_before packages_after | grep '^>'
+            echo "+++++++++++++++++++++++++++ prepare 09"
           sync: no
