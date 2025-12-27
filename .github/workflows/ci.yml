@@ -18,7 +18,7 @@ jobs:
             ls -l /usr/pkg/devel
             echo "+++++++++++++++++++++++++++ prepare 02b"
             which -a ftp
-            ftp https://cdn.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.xz
+            ftp https://ftp.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.xz
             echo "+++++++++++++++++++++++++++ prepare 03a"
             tar -xzf pkgsrc.tar.gz -C /usr/
             echo "+++++++++++++++++++++++++++ prepare 03b"
