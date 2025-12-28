@@ -10,6 +10,7 @@ jobs:
       - name: Start OpenIndiana VM
         uses: vmactions/openindiana-vm@v0
         with:
+          mem: 12288
           sync: no
 
       - shell: openindiana {0}
