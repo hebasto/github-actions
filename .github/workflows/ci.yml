@@ -10,18 +10,13 @@ jobs:
         uses: vmactions/netbsd-vm@v1
         with:
           prepare: |
+            pkg_add digest libtool-base mktools cwrappers
             pkg_admin -K /usr/pkg/pkgdb fetch-pkg-vulnerabilities
             ftp https://cdn.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.xz
-            echo "+++++++++++++++++++++++++++ prepare 01"
             tar -xf pkgsrc.tar.xz -C /usr/
             env -u PKG_PATH make -C /usr/pkgsrc/devel/pcre2/ replace
-            echo "+++++++++++++++++++++++++++ prepare 05"
             pkg_info > packages_before
-            echo "+++++++++++++++++++++++++++ prepare 06"
             pkg_add git-base
-            echo "+++++++++++++++++++++++++++ prepare 07"
             pkg_info > packages_after
-            echo "+++++++++++++++++++++++++++ prepare 08"
             diff -w packages_before packages_after | grep '^>'
-            echo "+++++++++++++++++++++++++++ prepare 09"
           sync: no
