@@ -13,4 +13,4 @@ jobs:
           sync: no
 
       - shell: openindiana {0}
-        run: ulimit -a
+        run: prtconf | grep Memory
