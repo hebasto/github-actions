@@ -21,10 +21,19 @@ jobs:
             echo "+++++++++++++++++++++++++++++++++"
             printenv TMPDIR
             echo "+++++++++++++++++++++++++++++++++"
+            env | sort
           sync: no
 
-      - run: echo $TMPDIR
+      - run: |
+          echo "+++++++++++++++++++++++++++++++++"
+          echo "=== $TMPDIR ==="
+          echo "+++++++++++++++++++++++++++++++++"
+          env | sort
 
-      - run: echo $TMPDIR
+      - run: |
+          echo "+++++++++++++++++++++++++++++++++"
+          echo "=== $TMPDIR ==="
+          echo "+++++++++++++++++++++++++++++++++"
+          env | sort
         env:
           TMPDIR: '${{ github.workspace }}/ci_tmp'
