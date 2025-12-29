@@ -4,12 +4,27 @@ on: push
 jobs:
   NetBSD:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: netbsd {0}
+
     steps:
       - uses: actions/checkout@v6
       - name: Start NetBSD VM
         uses: vmactions/netbsd-vm@v1
         with:
           run: |
-            ls -lh ${{ runner.temp }}
-            df -h ${{ runner.temp }}
+            echo "+++++++++++++++++++++++++++++++++"
+            mkdir "${{ github.workspace }}/ci_tmp"
+            echo "+++++++++++++++++++++++++++++++++"
+            export TMPDIR="${{ github.workspace }}/ci_tmp"
+            echo "+++++++++++++++++++++++++++++++++"
+            printenv TMPDIR
+            echo "+++++++++++++++++++++++++++++++++"
           sync: no
+
+      - run: echo $TMPDIR
+
+      - run: echo $TMPDIR
+        env:
+          TMPDIR: '${{ github.workspace }}/ci_tmp'
