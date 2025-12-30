@@ -10,5 +10,5 @@ jobs:
         uses: vmactions/netbsd-vm@v1
         with:
           prepare: |
-            pkg_add digest libtool-base mktools cwrappers
+            pkg_add git
           sync: no
