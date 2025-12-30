@@ -13,4 +13,12 @@ jobs:
           sync: no
 
       - shell: netbsd {0}
+        run: uname -a
+
+      - shell: netbsd {0}
         run: ulimit -a
+
+      - shell: netbsd {0}
+        run: |
+          ulimit -n 16384
+          ulimit -a
