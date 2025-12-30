@@ -12,6 +12,6 @@ jobs:
           prepare: |
             pkg_add digest libtool-base mktools cwrappers
             cd /usr
-            cvs -danoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P pkgsrc/devel/pcre2
+            CVS_RSH=ssh cvs -danoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P pkgsrc/devel/pcre2
             env -u PKG_PATH make -C pkgsrc/devel/pcre2/ replace
           sync: no
