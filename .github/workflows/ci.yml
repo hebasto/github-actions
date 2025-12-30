@@ -10,12 +10,14 @@ jobs:
         uses: vmactions/netbsd-vm@v1
         with:
           prepare: |
-            pkg_add digest libtool-base mktools cwrappers
             cd /usr
             cvs -danoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P \
                 pkgsrc/devel/pcre2 \
                 pkgsrc/mk \
                 pkgsrc/archivers/bzip2 \
-                pkgsrc/devel/zlib
-            env -u PKG_PATH make -C pkgsrc/devel/pcre2/ replace
+                pkgsrc/devel/zlib \
+                pkgsrc/lang/gcc15
+          run: |
+            pkg_add digest libtool-base mktools cwrappers
+            env -u PKG_PATH make -C /usr/pkgsrc/devel/pcre2 replace
           sync: no
