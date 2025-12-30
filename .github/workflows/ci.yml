@@ -16,8 +16,10 @@ jobs:
                 pkgsrc/mk \
                 pkgsrc/archivers/bzip2 \
                 pkgsrc/devel/zlib \
-                pkgsrc/lang/gcc15
+                pkgsrc/lang/gcc15 \
+                pkgsrc/pkgtools/digest
           run: |
-            pkg_add digest libtool-base mktools cwrappers
+            set -e
+            /usr/sbin/pkg_add digest libtool-base mktools cwrappers
             env -u PKG_PATH make -C /usr/pkgsrc/devel/pcre2 replace
           sync: no
