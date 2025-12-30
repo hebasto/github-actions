@@ -10,6 +10,7 @@ jobs:
         uses: vmactions/netbsd-vm@v1
         with:
           prepare: |
+            pkg_admin -K /usr/pkg/pkgdb fetch-pkg-vulnerabilities
             cd /usr
             cvs -danoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P \
                 pkgsrc/devel/pcre2 \
@@ -22,6 +23,5 @@ jobs:
                 pkgsrc/sysutils/install-sh/files
           run: |
             /usr/sbin/pkg_add digest libtool-base mktools cwrappers
-            pkg_admin -K /usr/pkg/pkgdb fetch-pkg-vulnerabilitie
             env -u PKG_PATH make -C /usr/pkgsrc/devel/pcre2 replace
           sync: no
