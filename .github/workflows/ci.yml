@@ -15,6 +15,7 @@ jobs:
                 pkgsrc/devel/pcre2 \
                 pkgsrc/mk \
                 pkgsrc/archivers/bzip2 \
+                pkgsrc/devel/libtool-base \
                 pkgsrc/devel/zlib \
                 pkgsrc/lang/gcc15 \
                 pkgsrc/pkgtools/digest
