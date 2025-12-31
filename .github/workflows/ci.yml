@@ -2,10 +2,10 @@ name: CI
 on: push
 
 jobs:
-  OpenBSD_1:
+  OpenBSD:
     name: 'OpenBSD ${{ matrix.release }}'
     runs-on: ubuntu-latest
-    strategy: &RELEASE_MATRIX
+    strategy:
       fail-fast: false
       matrix:
         release: [7.7, 7.8]
@@ -15,28 +15,10 @@ jobs:
         uses: vmactions/openbsd-vm@v1
         with:
           release: ${{ matrix.release }}
-          prepare: pkg_add -v capnproto
           sync: no
 
       - shell: openbsd {0}
         run: |
           uname -a
           clang -v
-
-  OpenBSD_2:
-    name: 'OpenBSD ${{ matrix.release }}'
-    runs-on: ubuntu-latest
-    strategy: *RELEASE_MATRIX
-
-    steps:
-      - name: Start OpenBSD ${{ matrix.release }} VM
-        uses: vmactions/openbsd-vm@v1
-        with:
-          release: ${{ matrix.release }}
-          prepare: pkg_add -v capnproto
-          sync: no
-
-      - shell: openbsd {0}
-        run: |
-          uname -a
-          clang -v
+          ulimit -a
