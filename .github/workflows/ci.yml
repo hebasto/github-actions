@@ -27,3 +27,4 @@ jobs:
           tar xf sqlite-autoconf-3460100.tar.gz
           cd sqlite-autoconf-3460100
           ./configure --enable-option-checking
+          make -j 4
