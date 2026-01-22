@@ -13,10 +13,4 @@ jobs:
         run: clang-cl -print-resource-dir
 
       - shell: cmd
-        run: dir "C:\Program Files\LLVM"
-
-      - shell: cmd
-        run: dir "C:\Program Files\LLVM\lib"
-
-      - shell: cmd
-        run: dir "C:\Program Files\LLVM\lib\clang"
+        run: dir "C:\Program Files\LLVM\lib\clang\20"
