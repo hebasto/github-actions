@@ -17,3 +17,7 @@ jobs:
 
       - shell: cmd
         run: dir "C:\Program Files\LLVM\lib\clang\20\lib\windows"
+
+      - uses: actions/checkout@v6
+
+      - run: cmake -B build
