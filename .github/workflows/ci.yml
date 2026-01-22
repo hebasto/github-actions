@@ -10,7 +10,13 @@ jobs:
         run: where clang-cl
 
       - shell: cmd
+        run: clang-cl -print-resource-dir
+
+      - shell: cmd
         run: dir "C:\Program Files\LLVM"
 
       - shell: cmd
         run: dir "C:\Program Files\LLVM\lib"
+
+      - shell: cmd
+        run: dir "C:\Program Files\LLVM\lib\clang"
