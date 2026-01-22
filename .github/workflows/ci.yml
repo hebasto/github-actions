@@ -8,3 +8,6 @@ jobs:
     steps:
       - shell: cmd
         run: where clang-cl
+
+      - shell: cmd
+        run: dir "C:\Program Files\LLVM"
