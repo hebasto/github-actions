@@ -14,3 +14,6 @@ jobs:
 
       - shell: cmd
         run: dir "C:\Program Files\LLVM\lib\clang\20"
+
+      - shell: cmd
+        run: dir "C:\Program Files\LLVM\lib\clang\20\lib"
