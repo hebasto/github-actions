@@ -23,4 +23,4 @@ jobs:
               per_page: 100
             });
 
-            console.log('Found ${all_pulls.length} open PRs.');
+            console.log(`Found ${all_pulls.length} open PRs.`);
