@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Identify PR to check
-        id: identify_pull_to_check
+        id: identify-pull-to-check
         uses: actions/github-script@v8
         env:
           INPUT_LAST_PR: ${{ inputs.last_pr_number }}
@@ -30,13 +30,17 @@ jobs:
               per_page: 100
             });
 
-            const pull_numbers = all_pulls
+            const nondraft_pulls = all_pulls
               .filter(pr => !pr.draft)
               .map(pr => pr.number)
               .sort((a, b) => a - b);
 
-            console.log(`Found ${pull_numbers.length} open, non-draft PRs.`);
+            const next_pull = nondraft_pulls.find(num => num > last_pull);
+            console.log(`The next PR to check: ${next_pull}`);
+            core.setOutput('next-pull', next_pull)
 
-            const next_pull_number = pull_numbers.find(num => num > last_pull);
-
-            console.log(`The next PR to check: ${next_pull_number}`);
+      - name: Checkout PR
+        uses: actions/checkout@v6
+        with:
+          repository: bitcoin/bitcoin
+          ref: refs/pull/${{ steps.identify-pull-to-check.outputs.next-pull }}/merge
