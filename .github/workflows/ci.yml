@@ -20,7 +20,7 @@ jobs:
           INPUT_LAST_PR: ${{ inputs.last_pr_number }}
         with:
           script: |
-            const last_pull = parseInt(process.env.INPUT_LAST_PR, 10);
+            const last_pull = parseInt(process.env.INPUT_LAST_PR || '1', 10);
             console.log(`The last checked PR number ${last_pull}`);
 
             const all_pulls = await github.paginate(github.rest.pulls.list, {
