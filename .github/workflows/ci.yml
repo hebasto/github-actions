@@ -30,14 +30,13 @@ jobs:
               per_page: 100
             });
 
-            const nondraft_pulls = all_pulls
+            const pull_numbers = all_pulls
               .filter(pr => !pr.draft)
-              .map(pr => pr.number);
+              .map(pr => pr.number)
+              .sort((a, b) => a - b);
 
-            console.log(`Found ${nondraft_pulls.length} open, non-draft PRs.`);
+            console.log(`Found ${pull_numbers.length} open, non-draft PRs.`);
 
-            const nondraft_pull_numbers = nondraft_pulls.map(pr => pr.number).sort((a, b) => a - b);
-
-            const next_pull_number = nondraft_pull_numbers.find(num => num > last_pull);
+            const next_pull_number = pull_numbers.find(num => num > last_pull);
 
             console.log(`The next PR to check: ${next_pull_number}`);
