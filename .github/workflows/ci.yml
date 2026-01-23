@@ -23,7 +23,7 @@ jobs:
             #   .map(pr => pr.number);
 
             # console.log(`Found ${candidates.length} open, non-draft PRs.`);
-            console.log(`Found ${all_pulls.length} open PRs.`);
+            console.log('Found ${all_pulls.length} open PRs.');
 
             # // 3. Set the output safely
             # //    JSON.stringify ensures the array is formatted correctly for the next step
