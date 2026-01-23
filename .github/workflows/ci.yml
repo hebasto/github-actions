@@ -1,5 +1,12 @@
 name: CI
-on: push
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      last_pr_number:
+        description: 'The last checked PR number'
+        required: false
+        default: '1'
 
 jobs:
   pr-chain:
@@ -9,8 +16,13 @@ jobs:
       - name: Fetch All Open PRs
         id: fetch_prs
         uses: actions/github-script@v8
+        env:
+          INPUT_LAST_PR: ${{ inputs.last_pr_number }}
         with:
           script: |
+            const last_pull = parseInt(process.env.INPUT_LAST_PR, 10);
+            console.log(`The last checked PR number ${last_pull}`);
+
             const all_pulls = await github.paginate(github.rest.pulls.list, {
               owner: 'bitcoin',
               repo: 'bitcoin',
@@ -18,8 +30,14 @@ jobs:
               per_page: 100
             });
 
-            const candidates = all_pulls
+            const nondraft_pulls = all_pulls
               .filter(pr => !pr.draft)
               .map(pr => pr.number);
 
-            console.log(`Found ${candidates.length} open, non-draft PRs.`);
+            console.log(`Found ${nondraft_pulls.length} open, non-draft PRs.`);
+
+            const nondraft_pull_numbers = nondraft_pulls.map(pr => pr.number).sort((a, b) => a - b);
+
+            const next_pull_number = nondraft_pull_numbers.find(num => num > last_pull);
+
+            console.log(`The next PR to check: ${next_pull_number}`);
