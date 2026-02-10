@@ -35,6 +35,6 @@ jobs:
               pkgsrc/security/openssl \
               pkgsrc/sysutils/install-sh/files
           run: |
-            pkg_add digest libnbcompat libtool-base mktools cwrappers
+            pkg_add cwrappers digest libnbcompat libtool-base mktools pkgconf
             ( unset PKG_PATH; make -C /usr/pkgsrc/devel/capnproto CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install )
           sync: nfs
