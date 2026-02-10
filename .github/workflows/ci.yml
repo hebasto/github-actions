@@ -26,6 +26,7 @@ jobs:
             cd /usr
             cvs -danoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P \
               pkgsrc/devel/capnproto \
+              pkgsrc/devel/libtool-base \
               pkgsrc/devel/zlib \
               pkgsrc/lang/gcc15 \
               pkgsrc/mk \
