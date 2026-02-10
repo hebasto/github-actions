@@ -22,18 +22,7 @@ jobs:
         with:
           release: ${{ matrix.release }}
           prepare: |
-            pkg_admin -K /usr/pkg/pkgdb fetch-pkg-vulnerabilities
-            cd /usr
-            cvs -danoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P \
-              pkgsrc/devel/capnproto \
-              pkgsrc/devel/libtool-base \
-              pkgsrc/devel/pkgconf \
-              pkgsrc/devel/zlib \
-              pkgsrc/lang/gcc15 \
-              pkgsrc/mk \
-              pkgsrc/pkgtools \
-              pkgsrc/security/openssl \
-              pkgsrc/sysutils/install-sh/files
+            ftp -o - http://cdn.netbsd.org/pub/pkgsrc/current/pkgsrc.tar.gz | tar -zxf - -C /usr
           run: |
             pkg_add cwrappers digest libnbcompat libtool-base mktools pkgconf
             ( unset PKG_PATH; make -C /usr/pkgsrc/devel/capnproto CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install )
