@@ -21,6 +21,5 @@ jobs:
             pkg_add -u python314
           run: |
             python3.14 --version
-            python3.14 -m pip install pyzmq
             python3.14 -m ensurepip
             python3.14 -m pip install pyzmq
