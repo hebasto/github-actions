@@ -22,5 +22,6 @@ jobs:
             pkg_add -u python314 ${{ matrix.packages }}
           run: |
             python3.14 --version
+            export PIP_ROOT_USER_ACTION=ignore
             python3.14 -m ensurepip
-            python3.14 -m pip install --root-user-action=ignore pyzmq
+            python3.14 -m pip install pycapnp
