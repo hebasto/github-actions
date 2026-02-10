@@ -22,7 +22,6 @@ jobs:
         with:
           release: ${{ matrix.release }}
           run: |
-            pkg_add curl
             pkg_add mozilla-rootcerts-openssl
             pkg_add cmake
             pkg_add ninja-build
