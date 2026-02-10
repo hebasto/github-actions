@@ -29,7 +29,8 @@ jobs:
               pkgsrc/lang/gcc15 \
               pkgsrc/mk \
               pkgsrc/pkgtools \
-              pkgsrc/security/openssl
+              pkgsrc/security/openssl \
+              pkgsrc/sysutils/install-sh/files
           run: |
             ( unset PKG_PATH; make -C /usr/pkgsrc/devel/capnproto CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install )
           sync: nfs
