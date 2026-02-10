@@ -36,5 +36,6 @@ jobs:
               pkgsrc/sysutils/install-sh/files
           run: |
             cd /usr/pkgsrc/devel/capnproto
+            unset PKG_PATH
             make DEPENDS_TARGET=bin-install CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install
           sync: nfs
