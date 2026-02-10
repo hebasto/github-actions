@@ -27,6 +27,7 @@ jobs:
             cvs -danoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P \
               pkgsrc/devel/capnproto \
               pkgsrc/devel/libtool-base \
+              pkgsrc/devel/pkgconf \
               pkgsrc/devel/zlib \
               pkgsrc/lang/gcc15 \
               pkgsrc/mk \
