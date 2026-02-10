@@ -22,4 +22,16 @@ jobs:
         with:
           release: ${{ matrix.release }}
           run: |
-            pkg_add curl mozilla-rootcerts-openssl cmake ninja-build git-base gcc14 pkgconf boost libevent sqlite3 zeromq python313 py313-zmq
+            pkg_add curl
+            pkg_add mozilla-rootcerts-openssl
+            pkg_add cmake
+            pkg_add ninja-build
+            pkg_add git-base
+            pkg_add gcc14
+            pkg_add pkgconf
+            pkg_add boost
+            pkg_add libevent
+            pkg_add sqlite3
+            pkg_add zeromq
+            pkg_add python313
+            pkg_add py313-zmq
