@@ -22,9 +22,7 @@ jobs:
         with:
           release: ${{ matrix.release }}
           run: |
-            pkg_add git-base
             pkg_add gcc14
             pkg_add pkgconf
             pkg_add boost
             pkg_add libevent
-            pkg_add sqlite3
