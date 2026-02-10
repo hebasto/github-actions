@@ -10,6 +10,7 @@ jobs:
       matrix:
         include:
           - release: '9.4'
+            packages: 'mozilla-rootcerts-openssl'
           - release: '10.1'
 
     steps:
@@ -18,8 +19,8 @@ jobs:
         with:
           release: ${{ matrix.release }}
           prepare: |
-            pkg_add -u python314
+            pkg_add -u python314 ${{ matrix.packages }}
           run: |
             python3.14 --version
             python3.14 -m ensurepip
-            python3.14 -m pip install pyzmq
+            python3.14 -m pip install --root-user-action=ignore pyzmq
