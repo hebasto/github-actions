@@ -26,6 +26,7 @@ jobs:
             cvs -danoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P \
               pkgsrc/devel/capnproto \
               pkgsrc/devel/zlib \
+              pkgsrc/lang/gcc15 \
               pkgsrc/mk \
               pkgsrc/security/openssl
           run: |
