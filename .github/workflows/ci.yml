@@ -22,7 +22,6 @@ jobs:
         with:
           release: ${{ matrix.release }}
           run: |
-            pkg_add mozilla-rootcerts-openssl
             pkg_add cmake
             pkg_add ninja-build
             pkg_add git-base
@@ -33,4 +32,3 @@ jobs:
             pkg_add sqlite3
             pkg_add zeromq
             pkg_add python313
-            pkg_add py313-zmq
