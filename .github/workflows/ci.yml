@@ -24,7 +24,10 @@ jobs:
           prepare: |
             cd /usr
             cvs -danoncvs@anoncvs.NetBSD.org:/cvsroot checkout -P \
-              pkgsrc/devel/capnproto
+              pkgsrc/devel/capnproto \
+              pkgsrc/devel/zlib \
+              pkgsrc/mk \
+              pkgsrc/security/openssl
           run: |
             ( unset PKG_PATH; make -C /usr/pkgsrc/devel/capnproto CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install )
           sync: nfs
