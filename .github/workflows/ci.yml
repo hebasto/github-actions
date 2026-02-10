@@ -36,5 +36,5 @@ jobs:
               pkgsrc/sysutils/install-sh/files
           run: |
             pkg_add cwrappers digest libnbcompat libtool-base mktools pkgconf
-            ( unset PKG_PATH; make -C /usr/pkgsrc/devel/capnproto CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install )
+            make -C /usr/pkgsrc/devel/capnproto CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install
           sync: nfs
