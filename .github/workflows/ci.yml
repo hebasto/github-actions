@@ -28,6 +28,7 @@ jobs:
               pkgsrc/devel/zlib \
               pkgsrc/lang/gcc15 \
               pkgsrc/mk \
+              pkgsrc/pkgtools \
               pkgsrc/security/openssl
           run: |
             ( unset PKG_PATH; make -C /usr/pkgsrc/devel/capnproto CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install )
