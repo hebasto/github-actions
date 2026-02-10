@@ -26,6 +26,7 @@ jobs:
             # See https://www.netbsd.org/docs/pkgsrc/getting.html.
             ftp -o - ftp://ftp.NetBSD.org/pub/pkgsrc/current/pkgsrc.tar.xz | tar -xf - -C /usr
           run: |
-            pkg_add cwrappers digest libnbcompat libtool-base mktools pkgconf
-            ( unset PKG_PATH; make -C /usr/pkgsrc/devel/capnproto CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install )
+            cd /usr/pkgsrc/devel/capnproto
+            unset PKG_PATH
+            make DEPENDS_TARGET=bin-install CPPFLAGS="-DKJ_NO_EXCEPTIONS=0 ${{ matrix.capnproto-cppflags }}" install
           sync: nfs
