@@ -26,3 +26,31 @@ jobs:
           df -h
           echo "++++++++++++++++++++++++"
           ls -la /home
+
+  OpenBSD-unbloated:
+    name: 'OpenBSD ${{ matrix.release }} - unbloated'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['7.8']
+
+    steps:
+      - name: Clear unnecessary files on bloated GHA VM
+        uses: bitcoin/bitcoin/.github/actions/clear-files@master
+
+      - name: Start OpenBSD ${{ matrix.release }} VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          run: |
+            df -h
+
+      - shell: openbsd {0}
+        run: |
+          uname -a
+          echo "++++++++++++++++++++++++"
+          df -h
+          echo "++++++++++++++++++++++++"
+          ls -la /home
