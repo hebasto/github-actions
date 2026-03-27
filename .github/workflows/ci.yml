@@ -16,6 +16,7 @@ jobs:
         with:
           release: ${{ matrix.release }}
           prepare: |
+            pkg_add -u
             pkg_add -v python%3
           run: |
             python3 --version
