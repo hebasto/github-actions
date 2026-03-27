@@ -21,6 +21,8 @@ jobs:
 
       - shell: openbsd {0}
         run: |
+          uname -a
+          echo "++++++++++++++++++++++++"
           df -h
           echo "++++++++++++++++++++++++"
           ls -la /home
