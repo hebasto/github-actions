@@ -15,6 +15,7 @@ jobs:
         uses: vmactions/openbsd-vm@v1
         with:
           release: ${{ matrix.release }}
+          sync: no
           run: |
             df -h
 
