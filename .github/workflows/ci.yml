@@ -6,16 +6,26 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # - name: Print built-in vcpkg commit hash
-      #   run: |
-      #     Write-Host "Built-in vcpkg root: $env:VCPKG_ROOT"
-      #     Set-Location -Path $env:VCPKG_ROOT
-      #     $builtin_hash = git rev-parse HEAD
-      #     Write-Host "Built-in vcpkg top commit hash: $builtin_hash"
-
       - name: Print external vcpkg commit hash
         run: |
           Write-Host "Built-in vcpkg root: $env:VCPKG_INSTALLATION_ROOT"
           Set-Location -Path $env:VCPKG_INSTALLATION_ROOT
+          $builtin_hash = git rev-parse HEAD
+          Write-Host "Built-in vcpkg top commit hash: $builtin_hash"
+
+      - name: Set up VS Developer Prompt
+        shell: pwsh -Command "$PSNativeCommandUseErrorActionPreference = $true; $ErrorActionPreference = 'Stop'; & '{0}'"
+        run: |
+          $vswherePath = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $installationPath = & $vswherePath -latest -property installationPath
+          & "${env:COMSPEC}" /s /c "`"$installationPath\Common7\Tools\vsdevcmd.bat`" -arch=x64 -no_logo && set" | foreach-object {
+            $name, $value = $_ -split '=', 2
+            echo "$name=$value" >> $env:GITHUB_ENV
+          }
+
+      - name: Print built-in vcpkg commit hash
+        run: |
+          Write-Host "Built-in vcpkg root: $env:VCPKG_ROOT"
+          Set-Location -Path $env:VCPKG_ROOT
           $builtin_hash = git rev-parse HEAD
           Write-Host "Built-in vcpkg top commit hash: $builtin_hash"
