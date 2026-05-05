@@ -18,4 +18,5 @@ jobs:
         with:
           release: ${{ matrix.release }}
           prepare: |
+            echo "CHECK_OSABI=no" >> /etc/pkg_install.conf
             pkg_add -u lsof
