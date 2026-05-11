@@ -8,3 +8,13 @@ jobs:
 
     steps:
       - run: pwd
+
+      - uses: actions/checkout@v6
+        with:
+          repository: bitcoin/bitcoin
+
+      - run: ls -l
+
+      - run: apk --no-cache --update add git
+
+      - run: git rev-parse HEAD || true
