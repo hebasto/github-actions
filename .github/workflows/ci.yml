@@ -19,6 +19,24 @@ jobs:
 
       - run: git rev-parse HEAD || true
 
+  alpine-depth:
+    runs-on: ubuntu-latest
+    container: alpine:latest
+
+    steps:
+      - run: pwd
+
+      - uses: actions/checkout@v6
+        with:
+          repository: bitcoin/bitcoin
+          fetch-depth: 0
+
+      - run: ls -la
+
+      - run: apk --no-cache --update add git
+
+      - run: git rev-parse HEAD || true
+
   ubuntu:
     runs-on: ubuntu-latest
 
