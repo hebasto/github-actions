@@ -17,6 +17,8 @@ jobs:
 
       - run: ls -la
 
+      - run: git config --global --add safe.directory $(pwd)
+
       - run: git rev-parse HEAD || true
 
   ubuntu:
