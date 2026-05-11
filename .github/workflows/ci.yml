@@ -13,8 +13,26 @@ jobs:
         with:
           repository: bitcoin/bitcoin
 
-      - run: ls -l
+      - run: ls -la
 
       - run: apk --no-cache --update add git
+
+      - run: git rev-parse HEAD || true
+
+  ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: pwd
+
+      - uses: actions/checkout@v6
+        with:
+          repository: bitcoin/bitcoin
+
+      - run: ls -la
+
+      - run: |
+          sudo apt update
+          sudo apt install git
 
       - run: git rev-parse HEAD || true
