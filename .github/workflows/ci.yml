@@ -6,10 +6,10 @@ jobs:
     runs-on: windows-2025-vs2026
 
     steps:
-      - shell: cmd
-        run: |
-          where dumpbin
-          echo ok
+      # - shell: cmd
+      #   run: |
+      #     where dumpbin
+      #     echo ok
 
       - name: Configure Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@v1
