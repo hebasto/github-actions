@@ -17,10 +17,9 @@ jobs:
           dir "C:\Program Files\Microsoft Visual Studio\18\Enterprise\VC\Auxiliary\Build"
 
       # https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-180#use-the-developer-tools-in-an-existing-command-window
-      - shell: cmd
-        run: |
-          call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
-          where dumpbin
+      - run: |
+          & $env:ComSpec /c 'call "C:\Program Files\Microsoft Visual Studio\18\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64'
+          (Get-Command dumpbin).Path
 
       # %comspec% /k "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_arm uwp -vcvars_ver=14.29
 
