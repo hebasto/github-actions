@@ -11,6 +11,13 @@ jobs:
       #     where dumpbin
       #     echo ok
 
+      - run: |
+          dir "C:\Program Files\Microsoft Visual Studio\18\Enterprise\VC"
+          dir "C:\Program Files\Microsoft Visual Studio\18\Enterprise\VC\Auxiliary"
+          dir "C:\Program Files\Microsoft Visual Studio\18\Enterprise\VC\Auxiliary\Build"
+
+      # %comspec% /k "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_arm uwp -vcvars_ver=14.29
+
       - name: Configure Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@v1
 
