@@ -23,4 +23,4 @@ jobs:
             git clone -c advice.detachedHead=false -b v2.2.2 https://github.com/capnproto/pycapnp
             python3 -m ensurepip --upgrade
             python3 -m pip install wheel
-            python3 -m pip install ./pycapnp
+            python3 -m pip install ./pycapnp -C force-system-libcapnp=True
