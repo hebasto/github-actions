@@ -1,0 +1,23 @@
+name: CI
+on: push
+
+jobs:
+  FreeBSD:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['14.4', '15.0']
+    steps:
+      - uses: actions/checkout@v2
+      - name: Start FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          prepare: |
+            pkg update
+            pkg install -y git python3
+          sync: no
+          run: |
+            git clone -b v2.2.2 https://github.com/capnproto/pycapnp
+            pip3 install ./pycapnp
