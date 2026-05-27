@@ -17,7 +17,9 @@ jobs:
           prepare: |
             pkg update
             pkg install -y git python3
+            python3 --version
           sync: no
           run: |
-            git clone -b v2.2.2 https://github.com/capnproto/pycapnp
-            pip3 install ./pycapnp
+            git clone -c advice.detachedHead=false -b v2.2.2 https://github.com/capnproto/pycapnp
+            python3 -m ensurepip
+            python3 -m pip install ./pycapnp
