@@ -16,7 +16,7 @@ jobs:
           release: ${{ matrix.release }}
           prepare: |
             pkg update
-            pkg install -y git python3 cmake
+            pkg install -y git python3 cmake capnproto
             python3 --version
           sync: no
           run: |
