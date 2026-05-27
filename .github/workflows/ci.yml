@@ -1,0 +1,26 @@
+name: CI
+on: push
+
+jobs:
+  FreeBSD:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['14.4', '15.1']
+    steps:
+      - name: FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          prepare: |
+            pkg update
+            pkg install -y git gmake
+            tar --version
+          run: |
+            git clone https://github.com/bitcoin/bitcoin
+            cd bitcoin
+            gmake --no-print-directory -C depends print-native_libmultiprocess_recipe_hash
+            git clean -xdff
+            gmake --no-print-directory -C depends print-native_libmultiprocess_recipe_hash
