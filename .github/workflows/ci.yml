@@ -1,0 +1,44 @@
+name: CI
+on: push
+
+jobs:
+  autotools:
+    name: 'OpenBSD ${{ matrix.release }}, Autotools'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['7.8', '7.9']
+
+    steps:
+      - name: Start OpenBSD ${{ matrix.release }} VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+
+      - name: Fetch source tarball
+        shell: openbsd {0}
+        run: |
+          set -e
+          pkg_add curl gtar--
+          curl --location --fail --output source.tar.gz https://github.com/bitcoin-core/secp256k1/archive/refs/heads/master.tar.gz
+          mkdir /home/secp256k1
+          gtar -xf source.tar.gz -C /home/secp256k1 --strip-components=1
+          rm -rf source.tar.gz
+
+      - name: Install build dependencies
+        shell: openbsd {0}
+        run: pkg_add autoconf%2.72 automake%1.18 libtool gmake
+
+      - name: Build with Autotools
+        shell: openbsd {0}
+        run: |
+          set -e
+          cd /home/secp256k1
+          export AUTOCONF_VERSION=2.72
+          export AUTOMAKE_VERSION=1.18
+          ./autogen.sh
+
+      - shell: openbsd {0}
+        run: cat /home/secp256k1/autotools-aux/ltmain.sh
