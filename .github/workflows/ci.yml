@@ -1,0 +1,74 @@
+name: CI
+on: push
+
+jobs:
+  autotools:
+    name: 'NetBSD ${{ matrix.release }}, Autotools'
+    runs-on: ubuntu-latest
+    strategy: &RELEASE_MATRIX
+      fail-fast: false
+      matrix:
+        release: ['10.1']
+
+    steps:
+      - &START_VM
+        name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+
+      - &FETCH_SOURCE
+        name: Fetch source tarball
+        shell: netbsd {0}
+        run: |
+          set -e
+          pkg_add curl
+          curl --location --fail --output source.tar.gz https://github.com/bitcoin-core/secp256k1/archive/refs/heads/master.tar.gz
+          mkdir secp256k1
+          tar -xf source.tar.gz -C secp256k1 --strip-components=1
+          rm -rf source.tar.gz
+
+      - name: Install build dependencies
+        shell: netbsd {0}
+        run: pkg_add autoconf automake libtool gmake
+
+      - name: Build with Autotools
+        shell: netbsd {0}
+        run: |
+          set -e
+          cd secp256k1
+          ./autogen.sh
+          ./configure --prefix="$(pwd)/../INSTALL" --disable-static
+          gmake -j 4
+          gmake install
+
+      - name: Result
+        shell: netbsd {0}
+        run: ls -l INSTALL/lib
+
+  cmake:
+    name: 'NetBSD ${{ matrix.release }}, CMake'
+    runs-on: ubuntu-latest
+    strategy: *RELEASE_MATRIX
+
+    steps:
+      - *START_VM
+      - *FETCH_SOURCE
+
+      - name: Install build dependencies
+        shell: netbsd {0}
+        run: pkg_add cmake gmake
+
+      - name: Build with CMake
+        shell: netbsd {0}
+        run: |
+          set -e
+          cmake -S secp256k1 -B build -DCMAKE_INSTALL_PREFIX="$(pwd)/INSTALL" -DBUILD_SHARED_LIBS=ON
+          cd build
+          cmake --build . -j 4
+          cmake --install .
+
+      - name: Result
+        shell: netbsd {0}
+        run: ls -l INSTALL/lib
