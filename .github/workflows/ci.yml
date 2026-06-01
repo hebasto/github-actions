@@ -24,7 +24,7 @@ jobs:
         run: |
           set -e
           pkg_add curl gtar--
-          curl --location --fail --output source.tar.gz https://github.com/bitcoin-core/secp256k1/archive/refs/heads/master.tar.gz
+          curl --location --fail --output source.tar.gz https://github.com/hebasto/secp256k1/archive/refs/heads/260601-libtool-abi.0.tar.gz
           mkdir /home/secp256k1
           gtar -xf source.tar.gz -C /home/secp256k1 --strip-components=1
           rm -rf source.tar.gz
