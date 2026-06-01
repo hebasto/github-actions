@@ -1,0 +1,76 @@
+name: CI
+on: push
+
+jobs:
+  autotools:
+    name: 'OpenBSD ${{ matrix.release }}, Autotools'
+    runs-on: ubuntu-latest
+    strategy: &RELEASE_MATRIX
+      fail-fast: false
+      matrix:
+        release: ['7.8', '7.9']
+
+    steps:
+      - &START_VM
+        name: Start OpenBSD ${{ matrix.release }} VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+
+      - &FETCH_SOURCE
+        name: Fetch source tarball
+        shell: openbsd {0}
+        run: |
+          set -e
+          pkg_add curl gtar--
+          curl --location --fail --output source.tar.gz https://github.com/bitcoin-core/secp256k1/archive/refs/heads/master.tar.gz
+          mkdir /home/secp256k1
+          gtar -xf source.tar.gz -C /home/secp256k1 --strip-components=1
+          rm -rf source.tar.gz
+
+      - name: Install build dependencies
+        shell: openbsd {0}
+        run: pkg_add autoconf%2.72 automake%1.18 libtool gmake
+
+      - name: Build with Autotools
+        shell: openbsd {0}
+        run: |
+          set -e
+          cd /home/secp256k1
+          export AUTOCONF_VERSION=2.72
+          export AUTOMAKE_VERSION=1.18
+          ./autogen.sh
+          ./configure --prefix=/home/INSTALL --disable-static
+          gmake -j 4
+          gmake install
+
+      - name: Result
+        shell: openbsd {0}
+        run: ls -l /home/INSTALL/lib
+
+  cmake:
+    name: 'OpenBSD ${{ matrix.release }}, CMake'
+    runs-on: ubuntu-latest
+    strategy: *RELEASE_MATRIX
+
+    steps:
+      - *START_VM
+      - *FETCH_SOURCE
+
+      - name: Install build dependencies
+        shell: openbsd {0}
+        run: pkg_add cmake gmake
+
+      - name: Build with CMake
+        shell: openbsd {0}
+        run: |
+          set -e
+          cmake -S /home/secp256k1 -B /home/build -DCMAKE_INSTALL_PREFIX=/home/INSTALL -DBUILD_SHARED_LIBS=ON
+          cd /home/build
+          cmake --build . -j 4
+          cmake --install .
+
+      - name: Result
+        shell: openbsd {0}
+        run: ls -l /home/INSTALL/lib
