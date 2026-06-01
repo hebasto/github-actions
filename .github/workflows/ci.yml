@@ -1,0 +1,81 @@
+name: CI
+on: push
+
+jobs:
+  autotools:
+    name: 'NetBSD ${{ matrix.release }}, Autotools, ${{ matrix.name }}'
+    runs-on: ubuntu-latest
+    strategy: &RELEASE_MATRIX
+      fail-fast: false
+      matrix:
+        release: ['9.4', '10.1']
+        name: ['master', 'PR']
+        include:
+          - name: 'master'
+            url: 'https://gitlab.freedesktop.org/freetype/freetype.git'
+            branch: 'master'
+          - name: 'PR'
+            url: 'https://gitlab.freedesktop.org/hebasto/freetype.git'
+            branch: '260602-cmake-bsd'
+
+    steps:
+      - &START_VM
+        name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+
+      - &FETCH_SOURCE
+        name: Fetch source
+        shell: netbsd {0}
+        run: |
+          set -e
+          pkg_add git
+          git clone ${{ matrix.url }} freetype
+          cd freetype
+          git switch ${{ matrix.branch }}
+
+      - name: Install build dependencies
+        shell: netbsd {0}
+        run: pkg_add autoconf automake libtool gmake
+
+      - name: Build with Autotools
+        shell: netbsd {0}
+        run: |
+          set -e
+          cd freetype
+          ./autogen.sh
+          ./configure --prefix="$(pwd)/../INSTALL" --disable-static
+          gmake -j 4
+          gmake install
+
+      - name: Result
+        shell: netbsd {0}
+        run: ls -l INSTALL/lib
+
+  cmake:
+    name: 'NetBSD ${{ matrix.release }}, CMake, ${{ matrix.name }}'
+    runs-on: ubuntu-latest
+    strategy: *RELEASE_MATRIX
+
+    steps:
+      - *START_VM
+      - *FETCH_SOURCE
+
+      - name: Install build dependencies
+        shell: netbsd {0}
+        run: pkg_add cmake gmake
+
+      - name: Build with CMake
+        shell: netbsd {0}
+        run: |
+          set -e
+          cmake -S freetype -B build -DCMAKE_INSTALL_PREFIX="$(pwd)/INSTALL" -DBUILD_SHARED_LIBS=ON
+          cd build
+          cmake --build . -j 4
+          cmake --install .
+
+      - name: Result
+        shell: netbsd {0}
+        run: ls -l INSTALL/lib
