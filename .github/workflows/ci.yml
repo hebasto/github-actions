@@ -5,13 +5,14 @@ jobs:
   autotools:
     name: 'OpenBSD ${{ matrix.release }}, Autotools'
     runs-on: ubuntu-latest
-    strategy:
+    strategy: &RELEASE_MATRIX
       fail-fast: false
       matrix:
         release: ['7.8', '7.9']
 
     steps:
-      - name: Start OpenBSD ${{ matrix.release }} VM
+      - &START_VM
+        name: Start OpenBSD ${{ matrix.release }} VM
         uses: vmactions/openbsd-vm@v1
         with:
           release: ${{ matrix.release }}
@@ -21,7 +22,8 @@ jobs:
         shell: openbsd {0}
         run: pkg_add curl gmake gtar--
 
-      - name: Fetch source tarball
+      - &FETCH_SOURCE
+        name: Fetch source tarball
         shell: openbsd {0}
         run: |
           set -e
@@ -38,6 +40,33 @@ jobs:
           ./configure --prefix=/home/INSTALL --disable-static
           gmake -j 4
           gmake install
+
+      - name: Result
+        shell: openbsd {0}
+        run: ls -l /home/INSTALL/lib
+
+  cmake:
+    name: 'OpenBSD ${{ matrix.release }}, CMake'
+    runs-on: ubuntu-latest
+    strategy: *RELEASE_MATRIX
+
+    steps:
+      - *START_VM
+
+      - name: Install build dependencies
+        shell: openbsd {0}
+        run: pkg_add cmake curl gmake gtar--
+
+      - *FETCH_SOURCE
+
+      - name: Build with CMake
+        shell: openbsd {0}
+        run: |
+          set -e
+          cmake -S /home/freetype -B /home/build -DCMAKE_INSTALL_PREFIX=/home/INSTALL -DBUILD_SHARED_LIBS=ON
+          cd /home/build
+          cmake --build . -j 4
+          cmake --install .
 
       - name: Result
         shell: openbsd {0}
