@@ -1,0 +1,44 @@
+name: CI
+on: push
+
+jobs:
+  autotools:
+    name: 'OpenBSD ${{ matrix.release }}, Autotools'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['7.8', '7.9']
+
+    steps:
+      - name: Start OpenBSD ${{ matrix.release }} VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+
+      - name: Install build dependencies
+        shell: openbsd {0}
+        run: pkg_add curl gmake gtar--
+
+      - name: Fetch source tarball
+        shell: openbsd {0}
+        run: |
+          set -e
+          curl --location --fail --output source.tar.gz https://download.savannah.gnu.org/releases/freetype/freetype-2.14.3.tar.gz
+          mkdir /home/freetype
+          gtar -xf source.tar.gz -C /home/freetype --strip-components=1
+          rm -rf source.tar.gz
+
+      - name: Build with Autotools
+        shell: openbsd {0}
+        run: |
+          set -e
+          cd /home/freetype
+          ./configure --prefix=/home/INSTALL --disable-static
+          gmake -j 4
+          gmake install
+
+      - name: Result
+        shell: openbsd {0}
+        run: ls -l /home/INSTALL/lib
