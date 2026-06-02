@@ -32,6 +32,7 @@ jobs:
         run: |
           set -e
           pkg_add -u git-base mozilla-rootcerts-openssl
+          mozilla-rootcerts install
           git clone ${{ matrix.url }} freetype
           cd freetype
           git switch ${{ matrix.branch }}
