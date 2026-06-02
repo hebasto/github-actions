@@ -31,7 +31,7 @@ jobs:
         shell: netbsd {0}
         run: |
           set -e
-          pkg_add git
+          pkg_add -u git-base mozilla-rootcerts-openssl
           git clone ${{ matrix.url }} freetype
           cd freetype
           git switch ${{ matrix.branch }}
