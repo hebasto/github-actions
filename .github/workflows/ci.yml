@@ -1,0 +1,14 @@
+name: CI
+on: push
+
+jobs:
+  opensuse:
+    runs-on: ubuntu-latest
+    container: opensuse/leap:16.0
+
+    steps:
+      - run: pwd
+
+      - run: cat /etc/os-release
+
+      - run: printenv PATH
