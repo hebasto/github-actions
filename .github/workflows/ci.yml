@@ -13,11 +13,5 @@ jobs:
 
       - run: printenv PATH
 
-      - name: Check currently enabled repositories
-        run: zypper lr -d
-
-      - name: Add update repository
-        run: zypper ar -cfg 'http://download.opensuse.org/update/leap/16.0/oss/' repo-update
-
-      - name: Check currently enabled repositories
-        run: zypper lr -d
+      - name: Install sqlite3-devel
+        run: zypper --non-interactive install --allow-downgrade sqlite3-devel
