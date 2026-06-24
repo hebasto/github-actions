@@ -12,3 +12,6 @@ jobs:
       - run: cat /etc/os-release
 
       - run: printenv PATH
+
+      - name: Check currently enabled repositories
+        run: zypper lr -d
