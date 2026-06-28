@@ -16,7 +16,7 @@ jobs:
           sync: no
           prepare: |
             pkg update
-            pkg install -y git gmake
+            pkg install -y bash git gmake
             tar --version
           run: |
             git clone https://github.com/bitcoin/bitcoin
