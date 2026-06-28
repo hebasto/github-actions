@@ -16,11 +16,15 @@ jobs:
           sync: no
           prepare: |
             pkg update
-            pkg install -y bash git gmake
+            pkg install -y bash curl gmake
             tar --version
           run: |
-            git clone https://github.com/bitcoin/bitcoin
-            cd bitcoin
-            gmake --no-print-directory -C depends print-native_libmultiprocess_recipe_hash
-            git clean -xdff
-            gmake --no-print-directory -C depends print-native_libmultiprocess_recipe_hash
+            curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
+            mkdir bitcoin
+            tar -xf source.tar.gz -C bitcoin --strip-components=1
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_recipe_hash
+            rm -rf bitcoin
+            curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
+            mkdir bitcoin
+            tar -xf source.tar.gz -C bitcoin --strip-components=1
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_recipe_hash
