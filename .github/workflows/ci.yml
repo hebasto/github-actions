@@ -17,7 +17,7 @@ jobs:
           disable-cache: true
           prepare: |
             pkg update
-            pkg install -y bash git gmake
+            pkg install -y bash git gmake py312-diffoscope
 
       - shell: freebsd {0}
         run: |
@@ -30,3 +30,7 @@ jobs:
           git clone --depth=1 https://github.com/hebasto/bitcoin -b 260629-depends-sort b
           cd b/depends
           gmake print-native_libmultiprocess_sha256_hash
+
+      - shell: freebsd {0}
+        run: |
+          diffoscope a/depends/sources/src-ipc-libmultiprocess.tar b/depends/sources/src-ipc-libmultiprocess.tar
