@@ -17,32 +17,14 @@ jobs:
           disable-cache: true
           prepare: |
             pkg update
-            pkg install -y bash curl gmake gtar py312-diffoscope
-            tar --version
-            gtar --version
-            sha256sum --version
-            which -a sha256sum
-            diffoscope --version
+            pkg install -y bash curl gmake gtar
           run: |
             curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
             mkdir bitcoin_a
             tar -xf source.tar.gz -C bitcoin_a --strip-components=1
-            echo "++++++++++++++++++++++++++++++++++++++++++++"
-            ls -l bitcoin_a/src/ipc/libmultiprocess
-            echo "++++++++++++++++++++++++++++++++++++++++++++"
-            gmake --no-print-directory -C bitcoin_a/depends build_freebsd_TAR="gtar --sort=name" print-native_libmultiprocess_sha256_hash
-            gmake --no-print-directory -C bitcoin_a/depends build_freebsd_TAR="gtar --sort=name" print-native_libmultiprocess_recipe_hash
-            cat /root/bitcoin_a/depends/sources/download-stamps/.stamp_fetched-native_libmultiprocess-src-ipc-libmultiprocess.tar.hash
+            gmake --no-print-directory -C bitcoin_a/depends build_TAR="gtar --sort=name" print-native_libmultiprocess_recipe_hash
 
             curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
             mkdir bitcoin_b
             tar -xf source.tar.gz -C bitcoin_b --strip-components=1
-            echo "++++++++++++++++++++++++++++++++++++++++++++"
-            ls -l bitcoin_b/src/ipc/libmultiprocess
-            echo "++++++++++++++++++++++++++++++++++++++++++++"
-            gmake --no-print-directory -C bitcoin_b/depends build_freebsd_TAR="gtar --sort=name" print-native_libmultiprocess_sha256_hash
-            gmake --no-print-directory -C bitcoin_b/depends build_freebsd_TAR="gtar --sort=name" print-native_libmultiprocess_recipe_hash
-            cat /root/bitcoin_b/depends/sources/download-stamps/.stamp_fetched-native_libmultiprocess-src-ipc-libmultiprocess.tar.hash
-
-            echo "=================================================="
-            diffoscope /root/bitcoin_a/depends/sources/src-ipc-libmultiprocess.tar /root/bitcoin_b/depends/sources/src-ipc-libmultiprocess.tar
+            gmake --no-print-directory -C bitcoin_b/depends build_TAR="gtar --sort=name" print-native_libmultiprocess_recipe_hash
