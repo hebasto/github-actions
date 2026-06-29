@@ -30,15 +30,8 @@ jobs:
             echo "++++++++++++++++++++++++++++++++++++++++++++"
             ls -l bitcoin_a/src/ipc/libmultiprocess
             echo "++++++++++++++++++++++++++++++++++++++++++++"
-            gmake --no-print-directory -C bitcoin_a/depends print-native_libmultiprocess_source
-            gmake --no-print-directory -C bitcoin_a/depends print-native_libmultiprocess_source_dir
-            gmake --no-print-directory -C bitcoin_a/depends print-native_libmultiprocess_all_sources
-            gmake --no-print-directory -C bitcoin_a/depends print-native_libmultiprocess_fetched
-            gmake --no-print-directory -C bitcoin_a/depends print-native_libmultiprocess_local_dir
-            gmake --no-print-directory -C bitcoin_a/depends print-native_libmultiprocess_sha256_hash
-            gmake --no-print-directory -C bitcoin_a/depends build_freebsd_TAR="gtar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner" print-native_libmultiprocess_sha256_hash
-            gmake --no-print-directory -C bitcoin_a/depends build_TAR="gtar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner" print-native_libmultiprocess_sha256_hash
-            gmake --no-print-directory -C bitcoin_a/depends print-native_libmultiprocess_recipe_hash
+            gmake --no-print-directory -C bitcoin_a/depends build_freebsd_TAR="gtar --sort=name" print-native_libmultiprocess_sha256_hash
+            gmake --no-print-directory -C bitcoin_a/depends build_freebsd_TAR="gtar --sort=name" print-native_libmultiprocess_recipe_hash
             cat /root/bitcoin_a/depends/sources/download-stamps/.stamp_fetched-native_libmultiprocess-src-ipc-libmultiprocess.tar.hash
 
             curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
@@ -47,15 +40,8 @@ jobs:
             echo "++++++++++++++++++++++++++++++++++++++++++++"
             ls -l bitcoin_b/src/ipc/libmultiprocess
             echo "++++++++++++++++++++++++++++++++++++++++++++"
-            gmake --no-print-directory -C bitcoin_b/depends print-native_libmultiprocess_source
-            gmake --no-print-directory -C bitcoin_b/depends print-native_libmultiprocess_source_dir
-            gmake --no-print-directory -C bitcoin_b/depends print-native_libmultiprocess_all_sources
-            gmake --no-print-directory -C bitcoin_b/depends print-native_libmultiprocess_fetched
-            gmake --no-print-directory -C bitcoin_b/depends print-native_libmultiprocess_local_dir
-            gmake --no-print-directory -C bitcoin_b/depends print-native_libmultiprocess_sha256_hash
-            gmake --no-print-directory -C bitcoin_b/depends build_freebsd_TAR="gtar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner" print-native_libmultiprocess_sha256_hash
-            gmake --no-print-directory -C bitcoin_b/depends build_TAR="gtar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner" print-native_libmultiprocess_sha256_hash
-            gmake --no-print-directory -C bitcoin_b/depends print-native_libmultiprocess_recipe_hash
+            gmake --no-print-directory -C bitcoin_b/depends build_freebsd_TAR="gtar --sort=name" print-native_libmultiprocess_sha256_hash
+            gmake --no-print-directory -C bitcoin_b/depends build_freebsd_TAR="gtar --sort=name" print-native_libmultiprocess_recipe_hash
             cat /root/bitcoin_b/depends/sources/download-stamps/.stamp_fetched-native_libmultiprocess-src-ipc-libmultiprocess.tar.hash
 
             echo "=================================================="
