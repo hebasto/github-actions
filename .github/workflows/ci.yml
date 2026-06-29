@@ -18,6 +18,9 @@ jobs:
             pkg update
             pkg install -y bash curl gmake gtar
             tar --version
+            gtar --version
+            sha256sum --version
+            which -a sha256sum
           run: |
             curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
             mkdir bitcoin
@@ -26,6 +29,7 @@ jobs:
             ls -l bitcoin/src/ipc/libmultiprocess
             echo "++++++++++++++++++++++++++++++++++++++++++++"
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_source
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_all_sources
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_fetched
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_local_dir
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_sha256_hash
@@ -39,6 +43,7 @@ jobs:
             ls -l bitcoin/src/ipc/libmultiprocess
             echo "++++++++++++++++++++++++++++++++++++++++++++"
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_source
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_all_sources
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_fetched
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_local_dir
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_sha256_hash
