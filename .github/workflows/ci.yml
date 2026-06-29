@@ -22,6 +22,9 @@ jobs:
             curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
             mkdir bitcoin
             tar -xf source.tar.gz -C bitcoin --strip-components=1
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_source
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_fetched
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_local_dir
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_sha256_hash
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_recipe_hash
 
@@ -29,19 +32,8 @@ jobs:
             curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
             mkdir bitcoin
             tar -xf source.tar.gz -C bitcoin --strip-components=1
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_source
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_fetched
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_local_dir
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_sha256_hash
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_recipe_hash
-
-            rm -rf bitcoin
-            curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
-            mkdir bitcoin
-            tar -xf source.tar.gz -C bitcoin --strip-components=1
-            gmake --no-print-directory -C bitcoin/depends build_TAR=gtar print-build_TAR
-            gmake --no-print-directory -C bitcoin/depends build_freebsd_TAR=gtar print-build_TAR
-            gmake --no-print-directory -C bitcoin/depends build_freebsd_TAR=gtar print-native_libmultiprocess_sha256_hash
-
-            rm -rf bitcoin
-            curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
-            mkdir bitcoin
-            tar -xf source.tar.gz -C bitcoin --strip-components=1
-            gmake --no-print-directory -C bitcoin/depends build_freebsd_TAR=gtar print-native_libmultiprocess_sha256_hash
