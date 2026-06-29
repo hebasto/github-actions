@@ -35,6 +35,8 @@ jobs:
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_fetched
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_local_dir
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_sha256_hash
+            gmake --no-print-directory -C bitcoin/depends build_freebsd_TAR="gtar --sort=name" print-native_libmultiprocess_sha256_hash
+            gmake --no-print-directory -C bitcoin/depends build_TAR="gtar --sort=name" print-native_libmultiprocess_sha256_hash
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_recipe_hash
             cat /root/bitcoin/depends/sources/download-stamps/.stamp_fetched-native_libmultiprocess-src-ipc-libmultiprocess.tar.hash
 
@@ -51,5 +53,7 @@ jobs:
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_fetched
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_local_dir
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_sha256_hash
+            gmake --no-print-directory -C bitcoin/depends build_freebsd_TAR="gtar --sort=name" print-native_libmultiprocess_sha256_hash
+            gmake --no-print-directory -C bitcoin/depends build_TAR="gtar --sort=name" print-native_libmultiprocess_sha256_hash
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_recipe_hash
             cat /root/bitcoin/depends/sources/download-stamps/.stamp_fetched-native_libmultiprocess-src-ipc-libmultiprocess.tar.hash
