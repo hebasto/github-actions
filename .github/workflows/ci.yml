@@ -1,0 +1,40 @@
+name: DEMO
+on: push
+
+jobs:
+  openbsd:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['7.8', '7.9']
+
+    steps:
+      - name: OpenBSD VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg_add -U -v bash git gmake gtar--
+
+      - shell: openbsd {0}
+        run: |
+          mkdir a && cd a && git init
+          git remote add origin https://github.com/bitcoin/bitcoin.git
+          git fetch --depth 1 origin 2a9e35d293b308e81811fa93ad2e5e8ed20e66e0
+          git checkout FETCH_HEAD
+          cd depends
+          gmake print-native_libmultiprocess_sha256_hash
+
+      - run: sleep 2
+
+      - shell: openbsd {0}
+        run: |
+          mkdir b && cd b && git init
+          git remote add origin https://github.com/bitcoin/bitcoin.git
+          git fetch --depth 1 origin 2a9e35d293b308e81811fa93ad2e5e8ed20e66e0
+          git checkout FETCH_HEAD
+          cd depends
+          gmake print-native_libmultiprocess_sha256_hash
