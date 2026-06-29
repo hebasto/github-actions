@@ -17,14 +17,10 @@ jobs:
           disable-cache: true
           prepare: |
             pkg update
-            pkg install -y bash curl gmake gtar
+            pkg install -y bash git gmake gtar
           run: |
-            curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
-            mkdir bitcoin_a
-            tar -xf source.tar.gz -C bitcoin_a --strip-components=1
-            gmake --no-print-directory -C bitcoin_a/depends build_TAR="gtar --sort=name" print-native_libmultiprocess_recipe_hash
+            git clone https://github.com/bitcoin/bitcoin.git bitcoin_a
+            gmake --no-print-directory -C bitcoin_a/depends print-native_libmultiprocess_recipe_hash
 
-            curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
-            mkdir bitcoin_b
-            tar -xf source.tar.gz -C bitcoin_b --strip-components=1
-            gmake --no-print-directory -C bitcoin_b/depends build_TAR="gtar --sort=name" print-native_libmultiprocess_recipe_hash
+            git clone https://github.com/bitcoin/bitcoin.git bitcoin_b
+            gmake --no-print-directory -C bitcoin_b/depends print-native_libmultiprocess_recipe_hash
