@@ -17,7 +17,7 @@ jobs:
           disable-cache: true
           prepare: |
             pkg update
-            pkg install -y bash curl gmake gtar py312-diffoscope-318
+            pkg install -y bash curl gmake gtar py312-diffoscope
             tar --version
             gtar --version
             sha256sum --version
@@ -57,3 +57,6 @@ jobs:
             gmake --no-print-directory -C bitcoin_b/depends build_TAR="gtar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner" print-native_libmultiprocess_sha256_hash
             gmake --no-print-directory -C bitcoin_b/depends print-native_libmultiprocess_recipe_hash
             cat /root/bitcoin_b/depends/sources/download-stamps/.stamp_fetched-native_libmultiprocess-src-ipc-libmultiprocess.tar.hash
+
+            echo "=================================================="
+            diffoscope /root/bitcoin_a/depends/sources/src-ipc-libmultiprocess.tar /root/bitcoin_b/depends/sources/src-ipc-libmultiprocess.tar
