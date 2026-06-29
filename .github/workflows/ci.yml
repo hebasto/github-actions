@@ -14,6 +14,7 @@ jobs:
         with:
           release: ${{ matrix.release }}
           sync: no
+          disable-cache: true
           prepare: |
             pkg update
             pkg install -y bash curl gmake gtar
@@ -29,11 +30,13 @@ jobs:
             ls -l bitcoin/src/ipc/libmultiprocess
             echo "++++++++++++++++++++++++++++++++++++++++++++"
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_source
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_source_dir
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_all_sources
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_fetched
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_local_dir
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_sha256_hash
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_recipe_hash
+            cat /root/bitcoin/depends/sources/download-stamps/.stamp_fetched-native_libmultiprocess-src-ipc-libmultiprocess.tar.hash
 
             rm -rf bitcoin
             curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/refs/heads/master.tar.gz
@@ -43,8 +46,10 @@ jobs:
             ls -l bitcoin/src/ipc/libmultiprocess
             echo "++++++++++++++++++++++++++++++++++++++++++++"
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_source
+            gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_source_dir
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_all_sources
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_fetched
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_local_dir
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_sha256_hash
             gmake --no-print-directory -C bitcoin/depends print-native_libmultiprocess_recipe_hash
+            cat /root/bitcoin/depends/sources/download-stamps/.stamp_fetched-native_libmultiprocess-src-ipc-libmultiprocess.tar.hash
