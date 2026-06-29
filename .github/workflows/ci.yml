@@ -21,18 +21,12 @@ jobs:
 
       - shell: freebsd {0}
         run: |
-          mkdir a && cd a && git init
-          git remote add origin https://github.com/bitcoin/bitcoin.git
-          git fetch --depth 1 origin 2a9e35d293b308e81811fa93ad2e5e8ed20e66e0
-          git checkout FETCH_HEAD
-          cd depends
+          git clone --depth=1 https://github.com/hebasto/bitcoin -b 260629-depends-sort a
+          cd a/depends
           gmake print-native_libmultiprocess_sha256_hash
 
       - shell: freebsd {0}
         run: |
-          mkdir b && cd b && git init
-          git remote add origin https://github.com/bitcoin/bitcoin.git
-          git fetch --depth 1 origin 2a9e35d293b308e81811fa93ad2e5e8ed20e66e0
-          git checkout FETCH_HEAD
-          cd depends
+          git clone --depth=1 https://github.com/hebasto/bitcoin -b 260629-depends-sort b
+          cd b/depends
           gmake print-native_libmultiprocess_sha256_hash
