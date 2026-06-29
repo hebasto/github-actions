@@ -2,12 +2,13 @@ name: DEMO
 on: push
 
 jobs:
-  FreeBSD:
+  freebsd:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         release: ['14.4', '15.1']
+
     steps:
       - name: FreeBSD VM
         uses: vmactions/freebsd-vm@v1
@@ -25,8 +26,11 @@ jobs:
           git remote add origin https://github.com/bitcoin/bitcoin.git
           git fetch --depth 1 origin 2a9e35d293b308e81811fa93ad2e5e8ed20e66e0
           git checkout FETCH_HEAD
+          ls -l src/ipc/libmultiprocess
           cd depends
           gmake print-native_libmultiprocess_sha256_hash
+
+      - run: sleep 2
 
       - shell: freebsd {0}
         run: |
@@ -34,5 +38,6 @@ jobs:
           git remote add origin https://github.com/bitcoin/bitcoin.git
           git fetch --depth 1 origin 2a9e35d293b308e81811fa93ad2e5e8ed20e66e0
           git checkout FETCH_HEAD
+          ls -l src/ipc/libmultiprocess
           cd depends
           gmake print-native_libmultiprocess_sha256_hash
