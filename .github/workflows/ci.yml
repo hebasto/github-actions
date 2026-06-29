@@ -22,12 +22,14 @@ jobs:
       - shell: freebsd {0}
         run: |
           git clone --depth=1 https://github.com/hebasto/bitcoin -b 260629-depends-sort a
+          ls -l a/src/ipc/libmultiprocess
           cd a/depends
           gmake print-native_libmultiprocess_sha256_hash
 
       - shell: freebsd {0}
         run: |
           git clone --depth=1 https://github.com/hebasto/bitcoin -b 260629-depends-sort b
+          ls -l b/src/ipc/libmultiprocess
           cd b/depends
           gmake print-native_libmultiprocess_sha256_hash
 
