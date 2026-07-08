@@ -21,14 +21,10 @@ jobs:
           disable-cache: true
           prepare: |
             pkg update
-            pkg install -y cmake-core python3 net/py-pyzmq databases/py-sqlite3
+            pkg install -y cmake-core python3 devel/py-pip net/py-pyzmq databases/py-sqlite3
           run: |
-            python3 -m ensurepip
-            pip3 install --upgrade pip
-            pip3 install pycapnp
+            pip install pycapnp
             python3 --version
-            python3 -c "import capnp; print('pycapnp', capnp.__version__)"
-            python3 -c "import zmq; print('pyzmq', zmq.__version__, '/ libzmq', zmq.zmq_version())"
-            python3 -c "import sqlite3; print('SQLite', sqlite3.sqlite_version)"
-            python3 -c "from capnp import version as v; import capnp; print('pycapnp', capnp.__version__, '/ libcapnp', f'{v.LIBCAPNP_VERSION_MAJOR}.{v.LIBCAPNP_VERSION_MINOR}.{v.LIBCAPNP_VERSION_MICRO}')"
-            python3 -c "import capnp; print(f'pycapnp {capnp.__version__} / libcapnp {version.LIBCAPNP_VERSION_MAJOR}.{version.LIBCAPNP_VERSION_MINOR}.{version.LIBCAPNP_VERSION_MICRO}')"
+            python3 -c "import sqlite3; print(f'SQLite {sqlite3.sqlite_version}')"
+            python3 -c "import capnp; print(f'pycapnp {capnp.__version__} / libcapnp {capnp.version.LIBCAPNP_VERSION_MAJOR}.{capnp.version.LIBCAPNP_VERSION_MINOR}.{capnp.version.LIBCAPNP_VERSION_MICRO}')"
+            python3 -c "import zmq; print(f'pyzmq {zmq.__version__} / libzmq {zmq.zmq_version()}')"
