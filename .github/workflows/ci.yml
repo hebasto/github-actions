@@ -24,6 +24,5 @@ jobs:
             python3.13 --version
             python3.13 -m ensurepip
             pip3 install --upgrade pip
-            export CPPFLAGS="-DKJ_NO_EXCEPTIONS=0"
-            export CFLAGS="-DKJ_NO_EXCEPTIONS=0"
-            pip3 install pycapnp
+            CXXFLAGS="-DKJ_NO_EXCEPTIONS=0" pip3 install pycapnp
+            python3.13 -c "import capnp; print('pycapnp', capnp.__version__)"
