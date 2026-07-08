@@ -23,8 +23,5 @@ jobs:
           run: |
             python3.13 --version
             python3.13 -m ensurepip
-            python3.13 -c "import site; import os; print(os.path.join(site.USER_BASE, 'bin'))"
-            python3.13 -c "import sysconfig; print(sysconfig.get_path('scripts'))"
-            echo $PATH
-            ls -l /usr/pkg/bin/pip*
             pip3 install --upgrade pip
+            pip3 install pycapnp
