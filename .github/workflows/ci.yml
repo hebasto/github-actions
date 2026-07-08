@@ -26,5 +26,4 @@ jobs:
             pip3 install --upgrade pip
             export CPPFLAGS="-DKJ_NO_EXCEPTIONS=0"
             export CFLAGS="-DKJ_NO_EXCEPTIONS=0"
-            export CXXFLAGS="-DKJ_NO_EXCEPTIONS=0"
             pip3 install pycapnp
