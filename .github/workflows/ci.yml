@@ -19,7 +19,7 @@ jobs:
           sync: no
           disable-cache: true
           prepare: |
-            pkg_add cmake python313 py313-zmq
+            pkg_add cmake python313 py313-zmq capnproto
           run: |
             python3.13 --version
             python3.13 -m ensurepip
