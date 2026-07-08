@@ -23,6 +23,6 @@ jobs:
           run: |
             python3.13 --version
             python3.13 -m ensurepip
-            CC=/usr/pkg/gcc14/bin/gcc python3.13 -m pip install pycapnp
+            CPPFLAGS="-DKJ_NO_EXCEPTIONS=0" CC=/usr/pkg/gcc14/bin/gcc python3.13 -m pip install pycapnp
             echo +++++++++++++++
             python3.13 -c "import capnp; print('pycapnp', capnp.__version__)"
