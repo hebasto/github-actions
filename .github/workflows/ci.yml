@@ -17,7 +17,7 @@ jobs:
         with:
           release: ${{ matrix.release }}
           prepare: |
-            pkg_add -u devel/cmake lang/python313 net/py-zmq
+            pkg_add cmake python313 py313-zmq
           run: |
             which -a python
             echo +++++++++++++++
