@@ -21,8 +21,11 @@ jobs:
           prepare: |
             pkg_add cmake python313 py313-zmq
           run: |
-            ls /usr/bin/which
-            echo +++++++++++++++
-            /usr/bin/which cmake
-            echo +++++++++++++++
             /usr/bin/which -a cmake
+            echo +++++++++++++++
+            /usr/bin/which -a python
+            echo +++++++++++++++
+            /usr/bin/which -a python3
+            echo +++++++++++++++
+            /usr/bin/which -a python3.13
+            echo +++++++++++++++
