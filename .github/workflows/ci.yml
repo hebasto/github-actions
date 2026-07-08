@@ -21,13 +21,8 @@ jobs:
           prepare: |
             pkg_add cmake python313 py313-zmq
           run: |
-            /usr/bin/which -a cmake
+            python3.13 --version
+            python3.13 -m ensurepip
+            python3.13 -m pip install pycapnp
             echo +++++++++++++++
-            /usr/bin/which python || echo "python NOT FOUND"
-            python --version || echo "python NOT FOUND"
-            echo +++++++++++++++
-            /usr/bin/which python3 || echo "python3 NOT FOUND"
-            python3 --version || echo "python NOT FOUND"
-            echo +++++++++++++++
-            /usr/bin/which python3.13 || echo "python3.13 NOT FOUND"
-            python3.13 --version || echo "python NOT FOUND"
+            python3.13 -c "import capnp; print('pycapnp', capnp.__version__)"
