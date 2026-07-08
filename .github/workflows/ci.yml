@@ -1,16 +1,14 @@
-name: CI
+name: Check
 on: push
 
 jobs:
-  NetBSD:
+  netbsd:
     name: 'NetBSD ${{ matrix.release }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - release: '9.4'
-            packages: 'mozilla-rootcerts-openssl'
           - release: '10.1'
 
     steps:
@@ -19,8 +17,16 @@ jobs:
         with:
           release: ${{ matrix.release }}
           prepare: |
-            pkg_add -u cmake python314 ${{ matrix.packages }}
+            pkg_add -u devel/cmake lang/python313 net/py-zmq
           run: |
-            python3.14 --version
-            python3.14 -m ensurepip
-            python3.14 -m pip install pycapnp
+            which -a python
+            echo +++++++++++++++
+            which -a python3
+            echo +++++++++++++++
+            which -a python3.13
+            echo +++++++++++++++
+            python3.13 --version
+            python3.13 -m ensurepip
+            python3.13 -m pip install pycapnp
+            echo +++++++++++++++
+            python3.13 -c "import capnp; print('pycapnp', capnp.__version__)"
