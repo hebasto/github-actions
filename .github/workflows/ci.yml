@@ -19,10 +19,10 @@ jobs:
           sync: no
           disable-cache: true
           prepare: |
-            pkg_add cmake python313 py313-zmq capnproto
+            pkg_add cmake gcc14 python313 py313-zmq capnproto
           run: |
             python3.13 --version
             python3.13 -m ensurepip
-            python3.13 -m pip install pycapnp
+            CC=/usr/pkg/gcc14/bin/gcc python3.13 -m pip install pycapnp
             echo +++++++++++++++
             python3.13 -c "import capnp; print('pycapnp', capnp.__version__)"
