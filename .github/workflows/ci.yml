@@ -23,9 +23,11 @@ jobs:
           run: |
             /usr/bin/which -a cmake
             echo +++++++++++++++
-            /usr/bin/which -a python || echo "python NOT FOUND"
+            /usr/bin/which python || echo "python NOT FOUND"
+            python --version || echo "python NOT FOUND"
             echo +++++++++++++++
-            /usr/bin/which -a python3 || echo "python3 NOT FOUND"
+            /usr/bin/which python3 || echo "python3 NOT FOUND"
+            python3 --version || echo "python NOT FOUND"
             echo +++++++++++++++
-            /usr/bin/which -a python3.13 || echo "python3.13 NOT FOUND"
-            echo +++++++++++++++
+            /usr/bin/which python3.13 || echo "python3.13 NOT FOUND"
+            python3.13 --version || echo "python NOT FOUND"
