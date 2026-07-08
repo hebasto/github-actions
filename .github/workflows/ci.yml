@@ -19,7 +19,7 @@ jobs:
           sync: no
           disable-cache: true
           prepare: |
-            pkg_add python313
+            pkg_add cmake python313
           run: |
             python3.13 --version
             python3.13 -m ensurepip
