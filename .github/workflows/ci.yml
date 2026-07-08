@@ -26,6 +26,5 @@ jobs:
             python3.13 -c "import site; import os; print(os.path.join(site.USER_BASE, 'bin'))"
             python3.13 -c "import sysconfig; print(sysconfig.get_path('scripts'))"
             echo $PATH
-            ls -l /root/.local/bin
-            ls -l /usr/pkg/bin
+            ls -l /usr/pkg/bin/pip*
             /root/.local/bin/pip3.13 install --upgrade pip
