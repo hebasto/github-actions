@@ -22,7 +22,7 @@ jobs:
           prepare: |
             pkg_add -U -v capnproto cmake-core python%3 py3-pip py3-zmq
           run: |
-            pip3 install --break-system-packages pycapnp -C force-bundled-libcapnp=True
+            CXXFLAGS="-fPIC" pip3 install --break-system-packages pycapnp -C force-bundled-libcapnp=True
             python3 --version
             python3 -c "import sqlite3; print(f'SQLite {sqlite3.sqlite_version}')"
             python3 -c "import capnp; print(f'pycapnp {capnp.__version__} / libcapnp {capnp.version.LIBCAPNP_VERSION_MAJOR}.{capnp.version.LIBCAPNP_VERSION_MINOR}.{capnp.version.LIBCAPNP_VERSION_MICRO}')"
