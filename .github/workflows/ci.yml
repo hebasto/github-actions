@@ -1,0 +1,31 @@
+name: Check
+on: push
+
+jobs:
+  openbsd:
+    name: 'OpenBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: '7.8'
+          - release: '7.9'
+
+    steps:
+      - name: Start OpenBSD ${{ matrix.release }} VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg_add -U -v cmake-core python%3 py3-zmq
+          run: |
+            python3 -m ensurepip
+            pip3 install --upgrade pip
+            pip3 install pycapnp
+            python3 --version
+            python3 -c "import sqlite3; print(f'SQLite {sqlite3.sqlite_version}')"
+            python3 -c "import capnp; print(f'pycapnp {capnp.__version__} / libcapnp {capnp.version.LIBCAPNP_VERSION_MAJOR}.{capnp.version.LIBCAPNP_VERSION_MINOR}.{capnp.version.LIBCAPNP_VERSION_MICRO}')"
+            python3 -c "import zmq; print(f'pyzmq {zmq.__version__} / libzmq {zmq.zmq_version()}')"
