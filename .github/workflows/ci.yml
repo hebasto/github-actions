@@ -20,7 +20,7 @@ jobs:
           sync: no
           disable-cache: true
           prepare: |
-            pkg_info -e 'capnproto-*'
+            pkg_info -e 'capnproto-*' || echo NOTHING
             echo +++++++++++++++++++++++++++++++++++++++++++
             pkg_add -U -v capnproto cmake-core python%3 py3-pip py3-zmq
             echo +++++++++++++++++++++++++++++++++++++++++++
