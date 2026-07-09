@@ -22,9 +22,8 @@ jobs:
           prepare: |
             pkg_add -U -v capnproto cmake-core python%3 py3-pip py3-zmq
           run: |
-            strip_l() { python3 -c "import sysconfig;print(sysconfig.get_config_var('$1') or '')" | sed 's|-L/usr/local/lib/*||g'; }
+            strip_l() { python3 -c "import sysconfig; print(sysconfig.get_config_var('$1') or '')" | sed 's|-L/usr/local/lib/*||g'; }
             export LDSHARED="$(strip_l LDSHARED)"
-            export LDCXXSHARED="$(strip_l LDCXXSHARED)"
             pip3 install --break-system-packages pycapnp -C force-bundled-libcapnp=True
             python3 --version
             python3 -c "import sqlite3; print(f'SQLite {sqlite3.sqlite_version}')"
