@@ -20,7 +20,11 @@ jobs:
           sync: no
           disable-cache: true
           prepare: |
+            pkg_info -e 'capnproto-*'
+            echo +++++++++++++++++++++++++++++++++++++++++++
             pkg_add -U -v capnproto cmake-core python%3 py3-pip py3-zmq
+            echo +++++++++++++++++++++++++++++++++++++++++++
+            pkg_info -e 'capnproto-*'
           run: |
             LDCXXSHARED="c++ -pthread -shared -fPIC" pip3 install --break-system-packages pycapnp -C force-bundled-libcapnp=True
             python3 --version
