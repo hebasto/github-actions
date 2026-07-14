@@ -1,0 +1,27 @@
+name: Check
+on: push
+
+jobs:
+  freebsd:
+    name: 'FreeBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: '14.4'
+          - release: '15.1'
+
+    steps:
+      - name: Start FreeBSD ${{ matrix.release }} VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg update
+            pkg install -y python3 devel/py-pip
+          run: |
+            pip install cmake
+            cmake --version
