@@ -1,0 +1,87 @@
+name: Check
+on: push
+
+jobs:
+  freebsd_pass:
+    name: 'FreeBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: '14.4'
+          - release: '15.1'
+
+    steps:
+      - name: Start FreeBSD ${{ matrix.release }} VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg update
+            pkg install -y \
+              devel/cmake-core \
+              devel/py-pip \
+              lang/python3
+          run: |
+            pip install pycapnp
+            python3 --version
+            python3 -c "import capnp; print(f'pycapnp {capnp.__version__} / libcapnp {capnp.version.LIBCAPNP_VERSION_MAJOR}.{capnp.version.LIBCAPNP_VERSION_MINOR}.{capnp.version.LIBCAPNP_VERSION_MICRO}')"
+
+  freebsd_fail:
+    name: 'FreeBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: '14.4'
+          - release: '15.1'
+
+    steps:
+      - name: Start FreeBSD ${{ matrix.release }} VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg update
+            pkg install -y \
+              devel/py-pip \
+              lang/python3
+            pip install cmake
+          run: |
+            pip install pycapnp
+            python3 --version
+            python3 -c "import capnp; print(f'pycapnp {capnp.__version__} / libcapnp {capnp.version.LIBCAPNP_VERSION_MAJOR}.{capnp.version.LIBCAPNP_VERSION_MINOR}.{capnp.version.LIBCAPNP_VERSION_MICRO}')"
+
+  freebsd_check:
+    name: 'FreeBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: '14.4'
+          - release: '15.1'
+
+    steps:
+      - name: Start FreeBSD ${{ matrix.release }} VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg update
+            pkg install -y \
+              devel/py-pip \
+              lang/python3
+            pip install --user cmake
+          run: |
+            pip install --user pycapnp
+            python3 --version
+            python3 -c "import capnp; print(f'pycapnp {capnp.__version__} / libcapnp {capnp.version.LIBCAPNP_VERSION_MAJOR}.{capnp.version.LIBCAPNP_VERSION_MINOR}.{capnp.version.LIBCAPNP_VERSION_MICRO}')"
