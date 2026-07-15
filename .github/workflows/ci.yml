@@ -1,0 +1,63 @@
+name: Check
+on: push
+
+jobs:
+  freebsd_pass:
+    name: 'FreeBSD, devel/cmake-core'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg update
+            pkg install -y \
+              devel/cmake-core \
+              devel/py-pip \
+              lang/python3
+          run: |
+            pip install pycapnp
+            python3 --version
+            python3 -c "import capnp; print(f'pycapnp {capnp.__version__} / libcapnp {capnp.version.LIBCAPNP_VERSION_MAJOR}.{capnp.version.LIBCAPNP_VERSION_MINOR}.{capnp.version.LIBCAPNP_VERSION_MICRO}')"
+
+  freebsd_fail:
+    name: 'FreeBSD, pip install cmake'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg update
+            pkg install -y \
+              devel/py-pip \
+              lang/python3
+            pip install cmake
+          run: |
+            pip install pycapnp
+            python3 --version
+            python3 -c "import capnp; print(f'pycapnp {capnp.__version__} / libcapnp {capnp.version.LIBCAPNP_VERSION_MAJOR}.{capnp.version.LIBCAPNP_VERSION_MINOR}.{capnp.version.LIBCAPNP_VERSION_MICRO}')"
+
+  freebsd_check:
+    name: 'FreeBSD, pip install --user cmake'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg update
+            pkg install -y \
+              devel/py-pip \
+              lang/python3
+            pip install --user cmake
+          run: |
+            pip install --user pycapnp
+            python3 --version
+            python3 -c "import capnp; print(f'pycapnp {capnp.__version__} / libcapnp {capnp.version.LIBCAPNP_VERSION_MAJOR}.{capnp.version.LIBCAPNP_VERSION_MINOR}.{capnp.version.LIBCAPNP_VERSION_MICRO}')"
