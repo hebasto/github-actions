@@ -14,13 +14,17 @@ jobs:
           - release: '11.0'
 
     steps:
+      - uses: actions/checkout@v7
+
       - name: Start NetBSD ${{ matrix.release }} VM
         uses: vmactions/netbsd-vm@v1
         with:
           release: ${{ matrix.release }}
-          sync: no
+          sync: 'rsync'
+          copyback: false
           disable-cache: true
           prepare: |
-            pkg_add capnproto
+            pkg_add capnproto cmake
           run: |
             echo $PATH
+            cmake -B build
