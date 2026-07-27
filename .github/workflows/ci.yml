@@ -1,0 +1,26 @@
+name: Check
+on: push
+
+jobs:
+  netbsd:
+    name: 'NetBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: '9.4'
+          - release: '10.1'
+          - release: '11.0'
+
+    steps:
+      - name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: no
+          disable-cache: true
+          prepare: |
+            pkg_add capnproto
+          run: |
+            echo $PATH
