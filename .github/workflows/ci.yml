@@ -24,7 +24,7 @@ jobs:
           copyback: false
           disable-cache: true
           prepare: |
-            pkg_add capnproto cmake
+            pkg_add capnproto cmake pkgconf
           run: |
             echo $PATH
             cmake -B build
