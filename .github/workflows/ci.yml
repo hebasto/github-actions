@@ -1,0 +1,9 @@
+name: CI
+on: push
+
+jobs:
+  macos:
+    runs-on: xcode-27
+    steps:
+      - run: |
+          brew list
