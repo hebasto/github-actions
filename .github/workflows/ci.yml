@@ -1,0 +1,17 @@
+name: CI
+on: push
+
+jobs:
+  check-os:
+    runs-on: macos-14
+    steps:
+      - name: ${{ runner.arch }}
+        run: uname -m
+
+      - run: brew list
+
+      - uses: actions/checkout@v7
+        with:
+          repository: bitcoin/bitcoin
+
+      - run: cmake -B build
