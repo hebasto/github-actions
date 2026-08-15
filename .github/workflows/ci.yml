@@ -2,12 +2,10 @@ name: CI
 on: push
 
 jobs:
-  check-os:
+  reproduce_issue35981:
     runs-on: macos-14
     steps:
       - run: brew list
-
-      - run: cmake --version
 
       - run: |
           clang --version
@@ -18,7 +16,12 @@ jobs:
         with:
           repository: bitcoin/bitcoin
 
-      - run: brew install boost capnp
+      - run: |
+          brew untap aws/tap
+          brew update
+          brew install cmake boost capnp
+
+      - run: cmake --version
 
       - run: cmake -B build
 
