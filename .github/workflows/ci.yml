@@ -10,6 +10,11 @@ jobs:
 
       - run: brew list
 
+      - run: |
+          clang --version
+          sudo xcode-select --switch /Applications/Xcode_16.2.0.app
+          clang --version
+
       - uses: actions/checkout@v7
         with:
           repository: bitcoin/bitcoin
