@@ -19,6 +19,6 @@ jobs:
         with:
           repository: bitcoin/bitcoin
 
-      - run: brew install boost
+      - run: brew install boost capnp
 
       - run: cmake -B build
