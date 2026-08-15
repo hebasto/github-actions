@@ -1,0 +1,29 @@
+name: CI
+on: push
+
+jobs:
+  reproduce_issue35981:
+    runs-on: macos-14
+    steps:
+      - run: brew list
+
+      - run: |
+          clang --version
+          sudo xcode-select --switch /Applications/Xcode_16.2.0.app
+          clang --version
+
+      - uses: actions/checkout@v7
+        with:
+          repository: bitcoin/bitcoin
+
+      - name: Install Homebrew's packages
+        run: |
+          brew untap aws/tap
+          brew update
+          brew install cmake boost capnp
+
+      - run: cmake --version
+
+      - run: cmake -B build
+
+      - run: cmake --build build -j 4
