@@ -1,0 +1,25 @@
+name: CI
+on: push
+
+jobs:
+  check-os:
+    runs-on: macos-14
+    steps:
+      - run: brew list
+
+      - run: cmake --version
+
+      - run: |
+          clang --version
+          sudo xcode-select --switch /Applications/Xcode_16.2.0.app
+          clang --version
+
+      - uses: actions/checkout@v7
+        with:
+          repository: bitcoin/bitcoin
+
+      - run: brew install boost capnp
+
+      - run: cmake -B build
+
+      - run: cmake --build build -j 4
