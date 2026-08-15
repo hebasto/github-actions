@@ -19,4 +19,6 @@ jobs:
         with:
           repository: bitcoin/bitcoin
 
+      - run: brew install boost
+
       - run: cmake -B build
