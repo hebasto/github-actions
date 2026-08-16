@@ -13,6 +13,10 @@ jobs:
           clang --version
 
       - run: |
+          /usr/bin/c++ --version
+          ls -l /usr/bin/
+
+      - run: |
           xcrun --show-sdk-path
           ls -l "$(xcrun --show-sdk-path)"
           ls -l "$(xcrun --show-sdk-path)"/usr
