@@ -26,6 +26,8 @@ jobs:
 
       - run: env | sort
 
-      - run: cmake -B build
+      - run: |
+          echo 'message("CMAKE_OSX_SYSROOT is ${CMAKE_OSX_SYSROOT}")' >> CMakeLists.txt
+          cmake -B build
 
       - run: cat build/CMakeFiles/CMakeConfigureLog.yaml
