@@ -24,6 +24,8 @@ jobs:
 
       - run: cmake --version
 
+      - run: env | sort
+
       - run: cmake -B build
 
       - run: cat build/CMakeFiles/CMakeConfigureLog.yaml
