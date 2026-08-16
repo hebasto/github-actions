@@ -19,7 +19,10 @@ jobs:
           echo ++++++++++++++++++
           ls -l "$(xcrun --show-sdk-path)"/usr/include
 
-      - run: clang -v -E -x c /dev/null 2>&1 | grep -A5 'search starts'
+      - run: |
+          clang -v -E -x c /dev/null 2>&1 | grep -A5 'search starts'
+          echo =======================================================
+          clang++ -v -E -x c++ /dev/null 2>&1 | grep -A5 'search starts'
 
       - uses: actions/checkout@v7
         with:
