@@ -26,6 +26,8 @@ jobs:
 
       - run: env | sort
 
+      - run: env | grep -iE 'cpath|cplus_include|c_include|sdkroot|library_path' | sort
+
       - run: |
           echo 'message("CMAKE_OSX_SYSROOT is ${CMAKE_OSX_SYSROOT}")' >> CMakeLists.txt
           cmake -B build
