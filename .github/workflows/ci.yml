@@ -17,7 +17,7 @@ jobs:
           ls -l "$(xcrun --show-sdk-path)"
           ls -l "$(xcrun --show-sdk-path)"/usr
           echo ++++++++++++++++++
-          ls -l "$(xcrun --show-sdk-path)"/usr/include
+          ls -l "$(xcrun --show-sdk-path)"/usr/include/c++/v1
 
       - run: |
           clang -v -E -x c /dev/null 2>&1 | grep -A5 'search starts'
