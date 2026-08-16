@@ -26,4 +26,4 @@ jobs:
 
       - run: cmake -B build
 
-      - run: cmake --build build -j 4
+      - run: cat build/CMakeFiles/CMakeConfigureLog.yaml
