@@ -12,6 +12,10 @@ jobs:
           sudo xcode-select --switch /Applications/Xcode_16.2.0.app
           clang --version
 
+      - run: |
+          xcrun --show-sdk-path
+          ls -l "$(xcrun --show-sdk-path)"
+
       - uses: actions/checkout@v7
         with:
           repository: bitcoin/bitcoin
