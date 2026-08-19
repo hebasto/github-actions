@@ -1,0 +1,35 @@
+name: OpenIndiana Performance Regression DEMO
+on: push
+
+jobs:
+  openindiana_v108:
+    name: 'OpenIndiana v1.0.8'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/openindiana-vm@v1.0.8
+        with:
+          release: '202510-build'
+          sync: 'no'
+      - shell: openindiana {0}
+        run: |
+          curl --location --fail --output sqlite-autoconf-3460100.tar.gz https://sqlite.org/2024/sqlite-autoconf-3460100.tar.gz
+          tar xf sqlite-autoconf-3460100.tar.gz
+          cd sqlite-autoconf-3460100
+          ./configure
+          make -j 4 install
+
+  openindiana_v116:
+    name: 'OpenIndiana v1.1.6'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/openindiana-vm@v1.1.6
+        with:
+          release: '202510-build'
+          sync: 'no'
+      - shell: openindiana {0}
+        run: |
+          curl --location --fail --output sqlite-autoconf-3460100.tar.gz https://sqlite.org/2024/sqlite-autoconf-3460100.tar.gz
+          tar xf sqlite-autoconf-3460100.tar.gz
+          cd sqlite-autoconf-3460100
+          ./configure
+          make -j 4 install
