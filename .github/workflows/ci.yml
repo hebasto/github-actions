@@ -1,0 +1,25 @@
+name: OmniOS locale bug
+on: push
+
+jobs:
+  omnios:
+    name: 'OmniOS'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: vmactions/omnios-vm@v1
+        with:
+          release: 'r151058'
+          prepare: |
+            pkg install developer/gcc15
+      - name: Test g++-15 with C.UTF-8 locale, should FAIL
+        shell: omnios {0}
+        run: |
+          g++-15 -v
+          g++-15 -std=c++20 test.cpp -o test
+          LANG=C.UTF-8 LD_PRELOAD=libumem.so.1 UMEM_DEBUG=guards ./test
+          mdb ./test core <<'EOF'
+          $G
+          ::status
+          $C
+          EOF
