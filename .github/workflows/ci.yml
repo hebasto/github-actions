@@ -1,0 +1,139 @@
+name: illumos-based OS locale bug
+on: push
+
+jobs:
+  openindiana:
+    name: 'OpenIndiana'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/openindiana-vm@v1
+        with:
+          release: '202604'
+          prepare: |
+            pkg install developer/gcc-13
+            pkg install developer/gcc-14
+      - shell: openindiana {0}
+        run: |
+          gcc-13 -v
+          if gcc-13 -v 2>&1 | grep -q -- --disable-bootstrap; then
+            echo "::warning title=gcc-13::gcc-13 was built without bootstrap (unoptimized)."
+          else
+            echo "gcc-13 is bootstrapped."
+          fi
+          if gcc-13 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
+            echo "::warning title=gcc-13::gcc-13 was built with configured clocale backend."
+          else
+            echo "gcc-13 has the default clocale backend."
+          fi
+          echo "---"
+          gcc-14 -v
+          if gcc-14 -v 2>&1 | grep -q -- --disable-bootstrap; then
+            echo "::warning title=gcc-14::gcc-14 was built without bootstrap (unoptimized)."
+          else
+            echo "gcc-14 is bootstrapped."
+          fi
+          if gcc-14 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
+            echo "::warning title=gcc-14::gcc-14 was built with configured clocale backend."
+          else
+            echo "gcc-14 has the default clocale backend."
+          fi
+
+  openindiana-build:
+    name: 'OpenIndiana, build'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/openindiana-vm@v1
+        with:
+          release: '202604-build'
+          prepare: |
+            pkg install developer/gcc-13
+      - shell: openindiana {0}
+        run: |
+          gcc-13 -v
+          if gcc-13 -v 2>&1 | grep -q -- --disable-bootstrap; then
+            echo "::warning title=gcc-13::gcc-13 was built without bootstrap (unoptimized)."
+          else
+            echo "gcc-13 is bootstrapped."
+          fi
+          if gcc-13 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
+            echo "::warning title=gcc-13::gcc-13 was built with configured clocale backend."
+          else
+            echo "gcc-13 has the default clocale backend."
+          fi
+          echo "---"
+          gcc-14 -v
+          if gcc-14 -v 2>&1 | grep -q -- --disable-bootstrap; then
+            echo "::warning title=gcc-14::gcc-14 was built without bootstrap (unoptimized)."
+          else
+            echo "gcc-14 is bootstrapped."
+          fi
+          if gcc-14 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
+            echo "::warning title=gcc-14::gcc-14 was built with configured clocale backend."
+          else
+            echo "gcc-14 has the default clocale backend."
+          fi
+
+  openindiana_v109:
+    name: 'OpenIndiana v1.0.9'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/openindiana-vm@v1.0.9
+        with:
+          prepare: |
+            pkg install developer/gcc-13
+            pkg install developer/gcc-14
+      - shell: openindiana {0}
+        run: |
+          gcc-13 -v
+          if gcc-13 -v 2>&1 | grep -q -- --disable-bootstrap; then
+            echo "::warning title=gcc-13::gcc-13 was built without bootstrap (unoptimized)."
+          else
+            echo "gcc-13 is bootstrapped."
+          fi
+          if gcc-13 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
+            echo "::warning title=gcc-13::gcc-13 was built with configured clocale backend."
+          else
+            echo "gcc-13 has the default clocale backend."
+          fi
+          echo "---"
+          gcc-14 -v
+          if gcc-14 -v 2>&1 | grep -q -- --disable-bootstrap; then
+            echo "::warning title=gcc-14::gcc-14 was built without bootstrap (unoptimized)."
+          else
+            echo "gcc-14 is bootstrapped."
+          fi
+          if gcc-14 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
+            echo "::warning title=gcc-14::gcc-14 was built with configured clocale backend."
+          else
+            echo "gcc-14 has the default clocale backend."
+          fi
+
+  omnios:
+    name: 'OmniOS'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: vmactions/omnios-vm@v1
+        with:
+          prepare: |
+            pkg install developer/gcc14 developer/gcc15
+      - shell: omnios {0}
+        run: |
+          gcc-14 -v
+          if gcc-14 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
+            echo "::warning title=gcc-14::gcc-14 was built with configured clocale backend."
+          else
+            echo "gcc-14 has the default clocale backend."
+          fi
+          echo "---"
+          gcc-15 -v
+          if gcc-15 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
+            echo "::warning title=gcc-15::gcc-15 was built with configured clocale backend."
+          else
+            echo "gcc-15 has the default clocale backend."
+          fi
+      - shell: omnios {0}
+        run: |
+          g++ -v
+          g++ -std=c++20 test.cpp -o test
+          LANG=en_US.UTF-8 ./test
