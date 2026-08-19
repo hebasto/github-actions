@@ -1,0 +1,28 @@
+name: CI
+on: push
+
+jobs:
+  fedora-nix:
+    name: 'Windows, cross-build using Nix, UCRT'
+    runs-on: ubuntu-latest
+    container: fedora:latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          dnf install -y nix cmake make patch which gawk gcc mingw64-gcc-c++
+
+      - uses: actions/checkout@v7
+        with:
+          repository: bitcoin/bitcoin
+          ref: pull/35877/head
+
+      - name: build
+        env:
+          NIX_BUILD_SHELL: 'bash'
+          HOST: 'x86_64-w64-mingw32ucrt'
+        shell: nix-shell contrib/devtools/shell-win64-cross.nix --run "bash -o errexit -o pipefail {0}"
+        run: |
+          gmake -C depends -j 4 NO_QT=1
+          cmake -B build --toolchain=depends/x86_64-w64-mingw32ucrt/toolchain.cmake
+          cmake --build build -t bitcoind -j 4
