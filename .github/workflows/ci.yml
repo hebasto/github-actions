@@ -1,0 +1,29 @@
+name: OpenIndiana Performance Regression DEMO
+on: push
+
+jobs:
+  openindiana_v108:
+    name: 'OpenIndiana v1.0.8'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/openindiana-vm@v1.0.8
+        with:
+          release: '202510-build'
+          sync: 'no'
+      - shell: openindiana {0}
+        run: |
+          gcc -v
+          g++ -v
+
+  openindiana_v109:
+    name: 'OpenIndiana v1.0.9'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/openindiana-vm@v1.0.9
+        with:
+          release: '202510-build'
+          sync: 'no'
+      - shell: openindiana {0}
+        run: |
+          gcc -v
+          g++ -v
