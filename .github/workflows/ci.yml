@@ -1,0 +1,33 @@
+name: Cloud-V
+on: push
+
+jobs:
+  visionfive2:
+    name: 'VisionFive 2'
+    runs-on: [self-hosted, visionfive2]
+
+    steps:
+      - run: |
+          uname -a
+          free -h
+          nproc
+
+  milkv-pioneer:
+    name: 'Milk-V Pioneer'
+    runs-on: [self-hosted, milkv-pioneer]
+
+    steps:
+      - run: |
+          uname -a
+          free -h
+          nproc
+
+  banana-pi-f3:
+    name: 'Banana Pi BPI-F3'
+    runs-on: [self-hosted, banana-pi-f3]
+
+    steps:
+      - run: |
+          uname -a
+          free -h
+          nproc
