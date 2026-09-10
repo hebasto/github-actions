@@ -1,0 +1,13 @@
+name: CI
+on: push
+
+jobs:
+  macos:
+    runs-on: xcode-27
+    steps:
+      - run: |
+          clang --version
+          xcode-select -p
+          xcrun --show-sdk-version
+          xcrun --show-sdk-path
+          grep -n pipe2 "$(xcrun --show-sdk-path)/usr/include/sys/unistd.h"
