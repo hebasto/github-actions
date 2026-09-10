@@ -10,4 +10,9 @@ jobs:
           xcode-select -p
           xcrun --show-sdk-version
           xcrun --show-sdk-path
-          grep -n pipe2 "$(xcrun --show-sdk-path)/usr/include/sys/unistd.h"
+          grep -C 5 -n pipe2 "$(xcrun --show-sdk-path)/usr/include/sys/unistd.h"
+
+      - uses: actions/checkout@v7
+
+      - run: |
+          cmake -B build
