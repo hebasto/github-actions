@@ -10,10 +10,10 @@ jobs:
         with:
           release: '202510-build'
           sync: 'no'
+
       - shell: openindiana {0}
         run: |
-          gcc -v
-          g++ -v
+          gcc -v | grep "bootstrap"
 
   openindiana_v109:
     name: 'OpenIndiana v1.0.9'
@@ -23,7 +23,9 @@ jobs:
         with:
           release: '202510-build'
           sync: 'no'
+          prepare: |
+            pkg install developer/gcc-13
       - shell: openindiana {0}
         run: |
-          gcc -v
-          g++ -v
+          gcc -v | grep "bootstrap"
+          gcc-13 -v | grep "bootstrap"
