@@ -132,8 +132,14 @@ jobs:
           else
             echo "gcc-15 has the default clocale backend."
           fi
-      - shell: omnios {0}
+      - name: Run test
+        shell: omnios {0}
         run: |
           g++ -v
           g++ -std=c++20 test.cpp -o test
           LANG=en_US.UTF-8 ./test
+      - name: Run test2
+        shell: omnios {0}
+        run: |
+          g++ -std=c++20 test2.cpp -o test2
+          LANG=en_US.UTF-8 ./test2
