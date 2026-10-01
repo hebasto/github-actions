@@ -132,6 +132,11 @@ jobs:
           else
             echo "gcc-15 has the default clocale backend."
           fi
+      - name: Check locale
+        shell: omnios {0}
+        run: |
+          g++ -std=c++20 check_locale.cpp -o check_locale
+          LANG=en_US.UTF-8 ./check_locale
       - name: Run test
         shell: omnios {0}
         run: |
