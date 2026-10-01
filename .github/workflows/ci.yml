@@ -18,7 +18,7 @@ jobs:
           else
             echo "gcc-13 is bootstrapped."
           fi
-          if gcc-13 -v 2>&1 | grep -o '--enable-clocale=[^ ]*'; then
+          if gcc-13 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
             echo "::warning title=gcc-13::clocale backend is configured."
           else
             echo "gcc-13 has the default clocale backend."
@@ -28,7 +28,7 @@ jobs:
           else
             echo "gcc-14 is bootstrapped."
           fi
-          if gcc-14 -v 2>&1 | grep -o '--enable-clocale=[^ ]*'; then
+          if gcc-14 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
             echo "::warning title=gcc-14::clocale backend is configured."
           else
             echo "gcc-14 has the default clocale backend."
@@ -50,7 +50,7 @@ jobs:
           else
             echo "gcc-13 is bootstrapped."
           fi
-          if gcc-13 -v 2>&1 | grep -o '--enable-clocale=[^ ]*'; then
+          if gcc-13 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
             echo "::warning title=gcc-13::clocale backend is configured."
           else
             echo "gcc-13 has the default clocale backend."
@@ -60,7 +60,7 @@ jobs:
           else
             echo "gcc-14 is bootstrapped."
           fi
-          if gcc-14 -v 2>&1 | grep -o '--enable-clocale=[^ ]*'; then
+          if gcc-14 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
             echo "::warning title=gcc-14::clocale backend is configured."
           else
             echo "gcc-14 has the default clocale backend."
