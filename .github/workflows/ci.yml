@@ -43,7 +43,7 @@ jobs:
         run: |
           g++-13 -v
           g++-13 -std=c++20 test.cpp -o test
-          LD_PRELOAD=libumem.so.1 UMEM_DEBUG=default LANG=en_US.UTF-8 ./test
+          LD_PRELOAD=libumem.so.1 UMEM_DEBUG=default LANG=C ./test
       - name: Test g++-13 with en_US.UTF-8 locale, should PASS
         if: always()
         shell: openindiana {0}
@@ -57,7 +57,7 @@ jobs:
         run: |
           g++-14 -v
           g++-14 -std=c++20 test.cpp -o test
-          LD_PRELOAD=libumem.so.1 UMEM_DEBUG=default LANG=en_US.UTF-8 ./test
+          LD_PRELOAD=libumem.so.1 UMEM_DEBUG=default LANG=C ./test
       - name: Test g++-14 with en_US.UTF-8 locale, should FAIL
         if: always()
         shell: openindiana {0}
@@ -96,7 +96,7 @@ jobs:
         run: |
           g++-14 -v
           g++-14 -std=c++20 test.cpp -o test
-          LD_PRELOAD=libumem.so.1 UMEM_DEBUG=default LANG=en_US.UTF-8 ./test
+          LD_PRELOAD=libumem.so.1 UMEM_DEBUG=default LANG=C ./test
       - name: Test g++-14 with en_US.UTF-8 locale, should FAIL
         if: always()
         shell: omnios {0}
@@ -110,7 +110,7 @@ jobs:
         run: |
           g++-15 -v
           g++-15 -std=c++20 test.cpp -o test
-          LD_PRELOAD=libumem.so.1 UMEM_DEBUG=default LANG=en_US.UTF-8 ./test
+          LD_PRELOAD=libumem.so.1 UMEM_DEBUG=default LANG=C ./test
       - name: Test g++-15 with en_US.UTF-8 locale, should FAIL
         if: always()
         shell: omnios {0}

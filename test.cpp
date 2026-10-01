@@ -1,2 +1,10 @@
+#include <iostream>
 #include <locale>
-int main() { for (int i = 0; i < 100000; ++i) std::locale(""); }
+int main()
+{
+    try {
+        std::locale("");
+    } catch (const std::runtime_error& e) {
+        std::cout << e.what() << '\n';
+    }
+}
