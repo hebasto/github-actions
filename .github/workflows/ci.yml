@@ -8,11 +8,41 @@ jobs:
     steps:
       - uses: vmactions/openindiana-vm@v1
         with:
-          sync: 'no'
           prepare: |
             pkg install developer/gcc-13
             pkg install developer/gcc-14
+      - shell: openindiana {0}
+        run: |
+          if gcc-13 -v 2>&1 | grep -q -- --disable-bootstrap; then
+            echo "::warning title=gcc-13::Compiler was built without bootstrap (unoptimized)."
+          else
+            echo "gcc-13 is bootstrapped."
+          fi
+          if gcc-13 -v 2>&1 | grep -o '--enable-clocale=[^ ]*'; then
+            echo "::warning title=gcc-13::clocale backend is configured."
+          else
+            echo "gcc-13 has the default clocale backend."
+          fi
+          if gcc-14 -v 2>&1 | grep -q -- --disable-bootstrap; then
+            echo "::warning title=gcc-14::Compiler was built without bootstrap (unoptimized)."
+          else
+            echo "gcc-14 is bootstrapped."
+          fi
+          if gcc-14 -v 2>&1 | grep -o '--enable-clocale=[^ ]*'; then
+            echo "::warning title=gcc-14::clocale backend is configured."
+          else
+            echo "gcc-14 has the default clocale backend."
+          fi
 
+  openindiana_v109:
+    name: 'OpenIndiana v1.0.9'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/openindiana-vm@v1.0.9
+        with:
+          prepare: |
+            pkg install developer/gcc-13
+            pkg install developer/gcc-14
       - shell: openindiana {0}
         run: |
           if gcc-13 -v 2>&1 | grep -q -- --disable-bootstrap; then
@@ -40,9 +70,9 @@ jobs:
     name: 'OmniOS'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v7
       - uses: vmactions/omnios-vm@v1
         with:
-          sync: 'no'
           prepare: |
             pkg install developer/gcc14 developer/gcc15
       - shell: omnios {0}
@@ -57,3 +87,8 @@ jobs:
           else
             echo "gcc-15 has the default clocale backend."
           fi
+      - shell: omnios {0}
+        run: |
+          g++ -v
+          g++ -std=c++20 test.cpp -o test
+          ./test
