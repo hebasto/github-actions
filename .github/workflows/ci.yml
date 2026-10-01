@@ -91,4 +91,4 @@ jobs:
         run: |
           g++ -v
           g++ -std=c++20 test.cpp -o test
-          ./test
+          LANG=en_US.UTF-8 ./test
