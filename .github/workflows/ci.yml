@@ -47,22 +47,12 @@ jobs:
             pkg install developer/gcc14 developer/gcc15
       - shell: omnios {0}
         run: |
-          if gcc-14 -v 2>&1 | grep -q -- --disable-bootstrap; then
-            echo "::warning title=gcc-14::Compiler was built without bootstrap (unoptimized)."
-          else
-            echo "gcc-14 is bootstrapped."
-          fi
-          if gcc-14 -v 2>&1 | grep -o '--enable-clocale=[^ ]*'; then
+          if gcc-14 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
             echo "::warning title=gcc-14::clocale backend is configured."
           else
             echo "gcc-14 has the default clocale backend."
           fi
-          if gcc-15 -v 2>&1 | grep -q -- --disable-bootstrap; then
-            echo "::warning title=gcc-15::Compiler was built without bootstrap (unoptimized)."
-          else
-            echo "gcc-15 is bootstrapped."
-          fi
-          if gcc-15 -v 2>&1 | grep -o '--enable-clocale=[^ ]*'; then
+          if gcc-15 -v 2>&1 | grep -o -e '--enable-clocale=[^ ]*'; then
             echo "::warning title=gcc-15::clocale backend is configured."
           else
             echo "gcc-15 has the default clocale backend."
