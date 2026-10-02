@@ -1,0 +1,25 @@
+name: CI
+on: push
+
+jobs:
+  NetBSD:
+    name: 'NetBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['10.2', '11.0']
+
+    steps:
+      - name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          prepare: pkg_add -u boost
+          sync: no
+          disable-cache: true
+
+      - shell: netbsd {0}
+        run: |
+          grep -rn "INCLUDE" /usr/pkg/lib/cmake/boost_headers-*/boost_headers-config.cmake
+          pkg_info boost-headers | head -3
