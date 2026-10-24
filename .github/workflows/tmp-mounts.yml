@@ -1,0 +1,85 @@
+name: tmp mounts probe
+on:
+  push:
+    branches: ['261024-tmp-mounts']
+  workflow_dispatch:
+
+env:
+  YAML_KEY_01: &PROBE_SCRIPT |
+    echo "--- mount"
+    mount
+    echo "--- df -h /tmp"
+    df -h /tmp
+    echo "--- df -h \$PWD ($PWD)"
+    df -h "$PWD"
+    echo "--- df -h /home"
+    df -h /home 2>/dev/null || true
+    echo "--- memory"
+    (sysctl -n hw.physmem64 || sysctl -n hw.physmem || prtconf 2>/dev/null | grep -i memory) 2>/dev/null || true
+
+jobs:
+  netbsd:
+    name: 'NetBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['10.2', '11.0']
+    steps:
+      - uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          mem: 12288
+          sync: no
+          disable-cache: true
+      - shell: netbsd {0}
+        run: *PROBE_SCRIPT
+
+  freebsd:
+    name: 'FreeBSD 15.1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/freebsd-vm@v1
+        with:
+          release: '15.1'
+          sync: no
+          disable-cache: true
+      - shell: freebsd {0}
+        run: *PROBE_SCRIPT
+
+  openbsd:
+    name: 'OpenBSD 8.0'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/openbsd-vm@v1
+        with:
+          release: '8.0'
+          sync: no
+          disable-cache: true
+      - shell: openbsd {0}
+        run: *PROBE_SCRIPT
+
+  omnios:
+    name: 'OmniOS r151058'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/omnios-vm@v1
+        with:
+          release: 'r151058'
+          mem: 12288
+          sync: no
+          disable-cache: true
+      - shell: omnios {0}
+        run: *PROBE_SCRIPT
+
+  openindiana:
+    name: 'OpenIndiana 202604-build'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: vmactions/openindiana-vm@v1
+        with:
+          release: '202604-build'
+          sync: no
+          disable-cache: true
+      - shell: openindiana {0}
+        run: *PROBE_SCRIPT
