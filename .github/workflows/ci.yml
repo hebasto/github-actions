@@ -55,7 +55,9 @@ jobs:
             -DENABLE_CURVE=OFF \
             -DENABLE_DRAFTS=OFF \
             -DBUILD_TESTS=OFF \
-            -DBUILD_STATIC=OFF
+            -DBUILD_STATIC=OFF \
+            -DWITH_PERF_TOOL=OFF \
+            -DCMAKE_SHARED_LINKER_FLAGS="-lsocket -lnsl"
           cmake --build build-zeromq -j $(getconf NPROCESSORS_ONLN)
           cmake --install build-zeromq
 
