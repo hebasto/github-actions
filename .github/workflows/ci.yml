@@ -60,8 +60,8 @@ jobs:
             -DCMAKE_SHARED_LINKER_FLAGS="-lsocket -lnsl"
           cmake --build build-zeromq -j $(getconf NPROCESSORS_ONLN)
           cmake --install build-zeromq
-          crle -u -l /usr/local/lib
-          crle
+          crle -64 -u -l /usr/local/lib
+          crle -64
 
       - name: Check ZeroMQ
         run: |
