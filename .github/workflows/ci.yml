@@ -13,10 +13,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v7
+
       - name: Checkout Bitcoin Core repo
         uses: actions/checkout@v7
         with:
           repository: bitcoin/bitcoin
+          path: bitcoin
+
+      - name: Add zeromq patch to depends
+        run: |
+          cp patches/windows_arm64_rdtsc.patch bitcoin/depends/patches/zeromq/
+          cd bitcoin
+          sed -i 's|^\$(package)_patches += add_new_include.patch$|&\n$(package)_patches += windows_arm64_rdtsc.patch|' depends/packages/zeromq.mk
+          sed -i 's|  patch -p1 < \$(\$(package)_patch_dir)/add_new_include.patch$|& \&\& \\\n  patch -p1 < $($(package)_patch_dir)/windows_arm64_rdtsc.patch|' depends/packages/zeromq.mk
+          git diff
+          git diff --quiet && exit 1 || true
 
       - name: Install LLVM MinGW toolchain
         run: |
@@ -28,17 +41,17 @@ jobs:
 
       - name: Build zeromq in depends
         run: |
-          gmake -C depends -j $(nproc) HOST=${{ env.CI_HOST }} CC=${{ env.CI_HOST }}-clang CXX=${{ env.CI_HOST }}-clang++ LOG=1 zeromq
+          gmake -C bitcoin/depends -j $(nproc) HOST=${{ env.CI_HOST }} CC=${{ env.CI_HOST }}-clang CXX=${{ env.CI_HOST }}-clang++ LOG=1 zeromq
 
       - name: Inspect result
         run: |
-          ls -la depends/${{ env.CI_HOST }}/lib/libzmq* depends/${{ env.CI_HOST }}/include/zmq*.h
-          cat depends/${{ env.CI_HOST }}/lib/pkgconfig/libzmq.pc
+          ls -la bitcoin/depends/built/${{ env.CI_HOST }}/zeromq/
+          tar -tzf bitcoin/depends/built/${{ env.CI_HOST }}/zeromq/*.tar.gz | grep -E 'libzmq|zmq.*\.h$'
 
-      - name: Upload depends logs
+      - name: Upload built package
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: depends-logs
-          path: depends/work/build/${{ env.CI_HOST }}/zeromq/
+          name: zeromq-${{ env.CI_HOST }}
+          path: bitcoin/depends/built/${{ env.CI_HOST }}/zeromq/
           if-no-files-found: ignore
