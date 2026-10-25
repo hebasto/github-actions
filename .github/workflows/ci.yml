@@ -47,7 +47,7 @@ jobs:
           set -e
           curl --location --fail --remote-name https://github.com/zeromq/libzmq/releases/download/v${{ env.ZEROMQ_VERSION }}/zeromq-${{ env.ZEROMQ_VERSION }}.tar.gz
           tar xf zeromq-${{ env.ZEROMQ_VERSION }}.tar.gz
-          cmake -S zeromq-${{ env.ZEROMQ_VERSION }} -B build-zeromq \
+          cmake -S zeromq-${{ env.ZEROMQ_VERSION }} -B build-zeromq -G Ninja \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.16 \
             -DCMAKE_BUILD_TYPE=Release \
             -DWITH_DOCS=OFF \
