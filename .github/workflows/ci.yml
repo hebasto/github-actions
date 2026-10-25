@@ -1,31 +1,83 @@
 name: CI
-on:
-  pull_request:
-  push:
-    branches:
-      - '**'
-    tags-ignore:
-      - '**'
-
-env:
-  # Ensure the latest merged pull request state is used, even on re-runs.
-  YAML_KEY_01: &CHECKOUT_REF_TMPL ${{ github.event_name == 'pull_request' && github.ref || '' }}
+on: push
 
 jobs:
-  build:
+  omnios:
+    name: 'OmniOS ${{ matrix.release }}: libzmq from source'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: omnios {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: 'r151056'
+            packages: 'developer/gcc14'
+          - release: 'r151058'
+            packages: 'developer/gcc15'
+
     steps:
-      - name: Print SHA and REF
-        run: |
-          echo "github.event_name: ${{ github.event_name }}"
-          echo "github.sha:        ${{ github.sha }}"
-          echo "github.ref:        ${{ github.ref }}"
-          echo "github.ref_name:   ${{ github.ref_name }}"
-          echo "---"
-          echo "GITHUB_SHA: $GITHUB_SHA"
-          echo "GITHUB_REF: $GITHUB_REF"
-
-      - uses: actions/checkout@v5
+      - name: Start OmniOS ${{ matrix.release }} VM
+        uses: vmactions/omnios-vm@v1
         with:
-          ref: *CHECKOUT_REF_TMPL
+          release: ${{ matrix.release }}
+          mem: 4096
+          prepare: |
+            set -e
+            pkg install ${{ matrix.packages }} \
+              ooce/developer/cmake \
+              ooce/developer/ninja \
+              developer/pkg-config \
+              runtime/python-313
+          sync: no
+          disable-cache: true
 
+      - name: Versions
+        run: |
+          gcc --version | head -1
+          cmake --version | head -1
+          python3.13 --version
+          pkg search -l zeromq zmq || echo 'no zeromq package in configured IPS repositories'
+
+      - name: Build ZeroMQ
+        env:
+          ZEROMQ_VERSION: '4.3.5'
+        run: |
+          set -e
+          curl --location --fail --remote-name https://github.com/zeromq/libzmq/releases/download/v${{ env.ZEROMQ_VERSION }}/zeromq-${{ env.ZEROMQ_VERSION }}.tar.gz
+          tar xf zeromq-${{ env.ZEROMQ_VERSION }}.tar.gz
+          cmake -S zeromq-${{ env.ZEROMQ_VERSION }} -B build-zeromq \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.16 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DWITH_DOCS=OFF \
+            -DWITH_LIBSODIUM=OFF \
+            -DENABLE_CURVE=OFF \
+            -DENABLE_DRAFTS=OFF \
+            -DBUILD_TESTS=OFF \
+            -DBUILD_STATIC=OFF
+          cmake --build build-zeromq -j $(getconf NPROCESSORS_ONLN)
+          cmake --install build-zeromq
+
+      - name: Check ZeroMQ
+        run: |
+          set -e
+          export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+          pkg-config --modversion libzmq
+          cat > zmq_test.cpp << 'EOT'
+          #include <zmq.h>
+          #include <cstdio>
+          int main() { int a, b, c; zmq_version(&a, &b, &c); std::printf("libzmq %d.%d.%d\n", a, b, c); void* ctx = zmq_ctx_new(); return zmq_ctx_term(ctx); }
+          EOT
+          g++ -std=c++20 zmq_test.cpp $(pkg-config --cflags --libs libzmq) -o zmq_test
+          LD_LIBRARY_PATH=/usr/local/lib ./zmq_test
+          ldd ./zmq_test | grep zmq
+
+      - name: Install pyzmq
+        run: |
+          set -e
+          export PIP_ROOT_USER_ACTION=ignore
+          python3.13 -m ensurepip
+          python3.13 -m pip install setuptools wheel
+          python3.13 -m pip install pyzmq
+          python3.13 -c "import zmq; print(f'pyzmq {zmq.__version__} / libzmq {zmq.zmq_version()}')"
