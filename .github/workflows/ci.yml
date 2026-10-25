@@ -60,6 +60,8 @@ jobs:
             -DCMAKE_SHARED_LINKER_FLAGS="-lsocket -lnsl"
           cmake --build build-zeromq -j $(getconf NPROCESSORS_ONLN)
           cmake --install build-zeromq
+          crle -u -l /usr/local/lib
+          crle
 
       - name: Check ZeroMQ
         run: |
@@ -72,7 +74,7 @@ jobs:
           int main() { int a, b, c; zmq_version(&a, &b, &c); std::printf("libzmq %d.%d.%d\n", a, b, c); void* ctx = zmq_ctx_new(); return zmq_ctx_term(ctx); }
           EOT
           g++ -std=c++20 zmq_test.cpp $(pkg-config --cflags --libs libzmq) -o zmq_test
-          LD_LIBRARY_PATH=/usr/local/lib ./zmq_test
+          ./zmq_test
           ldd ./zmq_test | grep zmq
 
       - name: Install pyzmq
