@@ -1,31 +1,44 @@
 name: CI
-on:
-  pull_request:
-  push:
-    branches:
-      - '**'
-    tags-ignore:
-      - '**'
+on: push
 
 env:
-  # Ensure the latest merged pull request state is used, even on re-runs.
-  YAML_KEY_01: &CHECKOUT_REF_TMPL ${{ github.event_name == 'pull_request' && github.ref || '' }}
+  # Same toolchain as windows-llvm-arm64.yml in hebasto/bitcoin-core-nightly.
+  CI_LLVM_MINGW_URL: https://github.com/mstorsjo/llvm-mingw/releases/download/20261020/llvm-mingw-20261020-ucrt-ubuntu-22.04-x86_64.tar.xz
+  CI_LLVM_MINGW_HASH: 55064b60b991a1e1e8090b8c2f84e82b22cfe5903d12c159d65064cf5e8ae335
+  CI_HOST: aarch64-w64-mingw32
 
 jobs:
-  build:
+  zeromq:
+    name: 'Windows ARM64, LLVM: depends zeromq only'
     runs-on: ubuntu-latest
+
     steps:
-      - name: Print SHA and REF
-        run: |
-          echo "github.event_name: ${{ github.event_name }}"
-          echo "github.sha:        ${{ github.sha }}"
-          echo "github.ref:        ${{ github.ref }}"
-          echo "github.ref_name:   ${{ github.ref_name }}"
-          echo "---"
-          echo "GITHUB_SHA: $GITHUB_SHA"
-          echo "GITHUB_REF: $GITHUB_REF"
-
-      - uses: actions/checkout@v5
+      - name: Checkout Bitcoin Core repo
+        uses: actions/checkout@v7
         with:
-          ref: *CHECKOUT_REF_TMPL
+          repository: bitcoin/bitcoin
 
+      - name: Install LLVM MinGW toolchain
+        run: |
+          curl -L -o llvm_mingw_toolchain.tar.gz ${{ env.CI_LLVM_MINGW_URL }}
+          echo "${{ env.CI_LLVM_MINGW_HASH }}  llvm_mingw_toolchain.tar.gz" | sha256sum --check
+          mkdir llvm_mingw_toolchain
+          tar -xf llvm_mingw_toolchain.tar.gz -C llvm_mingw_toolchain --strip-components=1
+          echo "${GITHUB_WORKSPACE}/llvm_mingw_toolchain/bin" >> "$GITHUB_PATH"
+
+      - name: Build zeromq in depends
+        run: |
+          gmake -C depends -j $(nproc) HOST=${{ env.CI_HOST }} CC=${{ env.CI_HOST }}-clang CXX=${{ env.CI_HOST }}-clang++ LOG=1 zeromq
+
+      - name: Inspect result
+        run: |
+          ls -la depends/${{ env.CI_HOST }}/lib/libzmq* depends/${{ env.CI_HOST }}/include/zmq*.h
+          cat depends/${{ env.CI_HOST }}/lib/pkgconfig/libzmq.pc
+
+      - name: Upload depends logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: depends-logs
+          path: depends/work/build/${{ env.CI_HOST }}/zeromq/
+          if-no-files-found: ignore
