@@ -8,12 +8,13 @@ on:
 
 jobs:
   openbsd:
-    name: 'OpenBSD ${{ matrix.release }}'
+    name: 'OpenBSD ${{ matrix.release }}, ${{ matrix.threads }} threads'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        release: ['7.7', '7.8', '7.9', '8.0']
+        release: ['7.8', '8.0']
+        threads: [1, 2, 3, 4, 6, 8]
     steps:
       - uses: actions/checkout@v5
 
@@ -31,5 +32,10 @@ jobs:
           set -e
           cd "$GITHUB_WORKSPACE/openbsd-connect-hang"
           uname -a
-          cc -O2 -Wall -o connect-hang connect-hang.c -lpthread
+          # Vary the thread count; give low counts more time to hit the race.
+          sed -e 's/^#define THREADS .*/#define THREADS ${{ matrix.threads }}/' \
+              -e 's/^#define RUN_SECONDS .*/#define RUN_SECONDS 180/' \
+              connect-hang.c > connect-hang-threads.c
+          grep '^#define' connect-hang-threads.c
+          cc -O2 -Wall -o connect-hang connect-hang-threads.c -lpthread
           ./connect-hang
