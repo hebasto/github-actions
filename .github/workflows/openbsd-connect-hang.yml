@@ -1,0 +1,35 @@
+name: OpenBSD connect hang
+on:
+  push:
+    paths:
+      - '.github/workflows/openbsd-connect-hang.yml'
+      - 'openbsd-connect-hang/**'
+  workflow_dispatch:
+
+jobs:
+  openbsd:
+    name: 'OpenBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['7.7', '7.8', '7.9', '8.0']
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Start OpenBSD ${{ matrix.release }} VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          usesh: true
+          sync: rsync
+          copyback: false
+
+      - name: Build and run
+        shell: openbsd {0}
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE/openbsd-connect-hang"
+          uname -a
+          cc -O2 -Wall -o connect-hang connect-hang.c -lpthread
+          ./connect-hang
