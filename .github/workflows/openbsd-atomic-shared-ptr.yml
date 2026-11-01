@@ -1,0 +1,84 @@
+name: OpenBSD atomic<shared_ptr>
+# Demonstrates whether the C++20 std::atomic<std::shared_ptr<T>> specialization
+# (feature-test macro __cpp_lib_atomic_shared_ptr, used by bitcoin/bitcoin#36011)
+# is available on the supported OpenBSD releases, and whether any special
+# compiler or linker flags are needed for it.
+on:
+  push:
+    paths:
+      - '.github/workflows/openbsd-atomic-shared-ptr.yml'
+      - 'ci/openbsd/**'
+  workflow_dispatch:
+
+jobs:
+  probe:
+    name: 'OpenBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: openbsd {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        # The two most recent releases, see https://www.openbsd.org/faq/faq5.html.
+        release: ['7.9', '8.0']
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Start OpenBSD ${{ matrix.release }} VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          sync: rsync
+          copyback: false
+          disable-cache: true
+
+      - name: Toolchain
+        run: |
+          set -e
+          uname -a
+          c++ --version
+          grep -n '__cpp_lib_atomic_shared_ptr' /usr/include/c++/v1/version /usr/include/c++/v1/__memory/shared_ptr.h || true
+          grep -n '_LIBCPP_VERSION ' /usr/include/c++/v1/__config /usr/include/c++/v1/__configuration/*.h 2>/dev/null | head -n 3 || true
+
+      - name: Preprocessor check (-std=c++20, no extra flags)
+        run: |
+          set -e
+          printf '#include <version>\n__cpp_lib_atomic_shared_ptr\n' > probe.cpp
+          echo "Macro expands to:"
+          c++ -std=c++20 -E -P probe.cpp | tail -n 1
+
+      - name: Build and run (-std=c++20, no extra flags)
+        run: |
+          set -e
+          c++ -std=c++20 -Wall -Wextra -o probe_default ci/openbsd/atomic_shared_ptr.cpp
+          ./probe_default
+
+      - name: Build and run (-std=c++20 -O2 -pthread)
+        run: |
+          set -e
+          c++ -std=c++20 -O2 -pthread -Wall -Wextra -o probe_o2 ci/openbsd/atomic_shared_ptr.cpp
+          ./probe_o2
+
+      - name: Build and run (-std=c++20 -fexperimental-library)
+        # libc++ hides some incomplete features behind this flag; check whether
+        # it changes anything for atomic<shared_ptr>.
+        run: |
+          set -e
+          c++ -std=c++20 -fexperimental-library -Wall -Wextra -o probe_exp ci/openbsd/atomic_shared_ptr.cpp
+          ./probe_exp
+
+      - name: Is -latomic available or needed?
+        run: |
+          set +e
+          ls -l /usr/lib/libatomic* /usr/local/lib/libatomic* 2>/dev/null || echo "no libatomic on the system"
+          c++ -std=c++20 -o probe_latomic ci/openbsd/atomic_shared_ptr.cpp -latomic
+          echo "exit status with -latomic: $?"
+          echo "Link line used by the driver without extra flags:"
+          c++ -std=c++20 -### -o /dev/null ci/openbsd/atomic_shared_ptr.cpp 2>&1 | grep -E 'ld"' | tr ' ' '\n' | grep -E '^"-l' | tr '\n' ' '; echo
+
+      - name: Symbols pulled from libc++ by the default build
+        run: |
+          set -e
+          nm -u probe_default | c++filt | grep -i -E 'atomic|shared_ptr|shared_count|__sp_mut' || echo "no shared_ptr/atomic related undefined symbols"
