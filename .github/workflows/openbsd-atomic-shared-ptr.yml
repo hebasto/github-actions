@@ -61,13 +61,20 @@ jobs:
           c++ -std=c++20 -O2 -pthread -Wall -Wextra -o probe_o2 ci/openbsd/atomic_shared_ptr.cpp
           ./probe_o2
 
-      - name: Build and run (-std=c++20 -fexperimental-library)
+      - name: Does -fexperimental-library change anything?
         # libc++ hides some incomplete features behind this flag; check whether
-        # it changes anything for atomic<shared_ptr>.
+        # it changes anything for atomic<shared_ptr>. Compile only first: the
+        # flag also adds -lc++experimental, which OpenBSD does not ship.
         run: |
-          set -e
-          c++ -std=c++20 -fexperimental-library -Wall -Wextra -o probe_exp ci/openbsd/atomic_shared_ptr.cpp
-          ./probe_exp
+          set +e
+          echo "Macro with -fexperimental-library expands to:"
+          c++ -std=c++20 -fexperimental-library -E -P probe.cpp | tail -n 1
+          c++ -std=c++20 -fexperimental-library -Wall -Wextra -c -o probe_exp.o ci/openbsd/atomic_shared_ptr.cpp
+          echo "compile-only exit status: $?"
+          c++ -std=c++20 -fexperimental-library -o probe_exp probe_exp.o
+          echo "link exit status: $?"
+          [ -x probe_exp ] && ./probe_exp
+          true
 
       - name: Is -latomic available or needed?
         run: |
