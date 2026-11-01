@@ -1,0 +1,239 @@
+name: OpenBSD test_bitcoin-qt
+# Reproduce the segmentation fault of `test_bitcoin-qt` seen in the
+# "OpenBSD 8.0, depends" nightly job on 2026-11-01. QTest reported that all
+# tests passed, and the process then crashed during teardown.
+# See https://github.com/hebasto/bitcoin-core-nightly/actions/runs/41280577449.
+on:
+  push:
+    branches:
+      - '261101-openbsd-qt-segfault'
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'bitcoin/bitcoin reference: refs/heads/<branch>, refs/pull/<PR>/head or <commit>'
+        required: true
+        default: 6c01bd0b2dc201c21e80ac3635828abf854ee5a0
+        type: string
+      workers:
+        description: 'Concurrent test processes'
+        required: true
+        default: 4
+        type: number
+      iterations:
+        description: 'Runs per worker'
+        required: true
+        default: 50
+        type: number
+      ctest_repeats:
+        description: 'Full CTest suite repetitions'
+        required: true
+        default: 15
+        type: number
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI_NCPU: 4
+  # Master commit built by the failed nightly job.
+  SOURCE_REF: ${{ inputs.ref || '6c01bd0b2dc201c21e80ac3635828abf854ee5a0' }}
+  WORKERS: ${{ inputs.workers || 4 }}
+  ITERATIONS: ${{ inputs.iterations || 50 }}
+  CTEST_REPEATS: ${{ inputs.ctest_repeats || 15 }}
+
+jobs:
+  openbsd-depends:
+    name: 'OpenBSD 8.0, depends, test_bitcoin-qt'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: openbsd {0}
+
+    steps:
+      - name: Start OpenBSD 8.0 VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: '8.0'
+          prepare: pkg_add -U -v curl gtar-- cmake-core ninja python%3 bash gmake bison gdb
+          sync: no
+          disable-cache: true
+
+      - name: Fetch source tarball
+        run: |
+          set -e
+          echo "Source: bitcoin/bitcoin @ ${{ env.SOURCE_REF }}"
+          curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/${{ env.SOURCE_REF }}.tar.gz
+          mkdir /home/bitcoin
+          gtar -xf source.tar.gz -C /home/bitcoin --strip-components=1
+          rm -rf source.tar.gz
+
+      - name: Build depends
+        uses: hebasto/bitcoin-core-nightly/.github/actions/build-depends@main
+        with:
+          vm: openbsd
+          source-dir: /home/bitcoin
+          cache-tag: openbsd-8.0
+
+      - name: Configure
+        # Same options as the nightly job.
+        run: |
+          set -e
+          cmake -S /home/bitcoin -B /home/build \
+            --toolchain /home/bitcoin/depends/x86_64-unknown-openbsd8.0/toolchain.cmake \
+            --preset dev-mode \
+            -DWITH_USDT=OFF \
+            -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
+
+      - name: Build test_bitcoin-qt
+        run: |
+          set -e
+          cmake --build /home/build --target test_bitcoin-qt --parallel ${{ env.CI_NCPU }}
+          ls -l /home/build/bin/test_bitcoin-qt
+          ldd /home/build/bin/test_bitcoin-qt
+
+      - name: Run test_bitcoin-qt repeatedly
+        # Several processes at once mimic the load of `ctest --parallel 4`
+        # in the nightly job. Each worker gets its own HOME, because
+        # OptionTests reads and writes QSettings under $HOME/.config, and
+        # its own working directory, so a core file (OpenBSD writes
+        # `<program>.core` into the working directory) can be matched to
+        # its run. Even-numbered workers run with MALLOC_OPTIONS=S, which
+        # turns use-after-free and similar heap errors into an immediate
+        # crash instead of silent corruption.
+        run: |
+          ulimit -c unlimited
+          sysctl kern.nosuidcoredump
+          mkdir -p /home/runs
+          w=1
+          while [ "$w" -le "${{ env.WORKERS }}" ]; do
+            mkdir -p "/home/runs/$w"
+            (
+              cd "/home/runs/$w"
+              export HOME="/home/runs/$w"
+              if [ $((w % 2)) -eq 0 ]; then
+                export MALLOC_OPTIONS=S
+              fi
+              echo "worker $w: MALLOC_OPTIONS=${MALLOC_OPTIONS:-<unset>}"
+              i=1
+              while [ "$i" -le "${{ env.ITERATIONS }}" ]; do
+                /home/build/bin/test_bitcoin-qt > "run-$i.log" 2>&1
+                rc=$?
+                echo "worker $w run $i: exit status $rc"
+                if [ "$rc" -ne 0 ] || [ -e test_bitcoin-qt.core ]; then
+                  echo "FAILED" > "failed-$i"
+                  [ -e test_bitcoin-qt.core ] && mv test_bitcoin-qt.core "run-$i.core"
+                fi
+                i=$((i + 1))
+              done
+            ) &
+            w=$((w + 1))
+          done
+          wait
+          echo "::group::Core files"
+          ls -l /home/runs/*/*.core 2>/dev/null || echo "none"
+          echo "::endgroup::"
+          if ls /home/runs/*/failed-* > /dev/null 2>&1; then
+            echo "::error::test_bitcoin-qt failed or dumped core"
+            exit 1
+          fi
+
+      - name: Debug failures
+        if: failure()
+        run: |
+          for f in /home/runs/*/failed-*; do
+            [ -e "$f" ] || continue
+            dir=$(dirname "$f")
+            i=${f##*/failed-}
+            echo "::group::Worker $(basename "$dir") run $i: output"
+            cat "$dir/run-$i.log"
+            echo "::endgroup::"
+            if [ -e "$dir/run-$i.core" ]; then
+              echo "::group::Worker $(basename "$dir") run $i: backtrace"
+              egdb --batch \
+                -ex "thread apply all bt full" \
+                -ex "info sharedlibrary" \
+                /home/build/bin/test_bitcoin-qt "$dir/run-$i.core"
+              echo "::endgroup::"
+            fi
+          done
+
+  openbsd-ctest:
+    # The nightly job runs test_bitcoin-qt through `ctest --parallel 4`,
+    # alongside test_bitcoin and the other test programs. Repeat the whole
+    # suite under the same conditions, in case the crash needs that load.
+    name: 'OpenBSD 8.0, depends, ctest'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: openbsd {0}
+
+    steps:
+      - name: Start OpenBSD 8.0 VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: '8.0'
+          prepare: pkg_add -U -v curl gtar-- cmake-core ninja python%3 bash gmake bison gdb
+          sync: no
+          disable-cache: true
+
+      - name: Fetch source tarball
+        run: |
+          set -e
+          echo "Source: bitcoin/bitcoin @ ${{ env.SOURCE_REF }}"
+          curl --location --fail --output source.tar.gz https://github.com/bitcoin/bitcoin/archive/${{ env.SOURCE_REF }}.tar.gz
+          mkdir /home/bitcoin
+          gtar -xf source.tar.gz -C /home/bitcoin --strip-components=1
+          rm -rf source.tar.gz
+          # Test data.
+          DIR_UNIT_TEST_DATA=/home/qa-assets/unit_test_data
+          mkdir -p "$DIR_UNIT_TEST_DATA"
+          curl --location --fail --output "${DIR_UNIT_TEST_DATA}/script_assets_test.json" https://github.com/bitcoin-core/qa-assets/raw/main/unit_test_data/script_assets_test.json
+
+      - name: Build depends
+        uses: hebasto/bitcoin-core-nightly/.github/actions/build-depends@main
+        with:
+          vm: openbsd
+          source-dir: /home/bitcoin
+          cache-tag: openbsd-8.0
+
+      - name: Configure
+        run: |
+          set -e
+          cmake -S /home/bitcoin -B /home/build \
+            --toolchain /home/bitcoin/depends/x86_64-unknown-openbsd8.0/toolchain.cmake \
+            --preset dev-mode \
+            -DWITH_USDT=OFF \
+            -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
+
+      - name: Build
+        run: cmake --build /home/build --parallel ${{ env.CI_NCPU }}
+
+      - name: Run the CTest suite repeatedly
+        run: |
+          ulimit -c unlimited
+          export DIR_UNIT_TEST_DATA=/home/qa-assets/unit_test_data
+          ctest --test-dir /home/build --parallel ${{ env.CI_NCPU }} \
+            --repeat until-fail:${{ env.CTEST_REPEATS }} --output-on-failure
+
+      - name: Debug failures
+        if: failure()
+        run: |
+          echo "::group::Failed tests"
+          cat /home/build/Testing/Temporary/LastTestsFailed.log 2>/dev/null || echo "none recorded"
+          echo "::endgroup::"
+          cores=$(find /home/build -name '*.core')
+          if [ -z "$cores" ]; then
+            echo "No core files"
+            exit 0
+          fi
+          for core in $cores; do
+            prog=$(basename "$core" .core)
+            exe=$(find /home/build/bin -name "$prog" -type f | head -1)
+            echo "::group::$core ($exe)"
+            egdb --batch \
+              -ex "thread apply all bt full" \
+              -ex "info sharedlibrary" \
+              "$exe" "$core"
+            echo "::endgroup::"
+          done
