@@ -1,0 +1,79 @@
+# Minimal reproducer: `pkg_add boost` dies with SIGPIPE (exit status 141) on
+# the NetBSD 11.0 and 11.1 images shipped by vmactions/netbsd-vm v1.5.3
+# (anyvm 0.7.5, netbsd-builder 2.2.9). The same command on the same package
+# set passed on the v1.5.2 images (netbsd-builder 2.2.7) and still passes on
+# the v1.5.3 image for 10.2.
+#
+# pkg_add prints the boost-build post-install notice, then stays silent for
+# seven to nine minutes while it unpacks boost-headers, boost-docs and
+# boost-libs, and ends with status 141. A dropped SSH session would end the
+# step with 255; 141 is the status of the shell inside the guest.
+name: NetBSD Boost install
+on:
+  push:
+    paths:
+      - '.github/workflows/netbsd-boost.yml'
+  workflow_dispatch:
+
+jobs:
+  netbsd:
+    name: 'NetBSD ${{ matrix.release }}, netbsd-vm@v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - release: '10.2'
+            pkgsrc_release: '10.0_2026Q2'
+          - release: '11.0'
+            pkgsrc_release: '11.0_2026Q2'
+          - release: '11.1'
+            pkgsrc_release: '11.0_2026Q2'
+    steps:
+      - name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          mem: 12288
+          sync: no
+          disable-cache: true
+
+      - name: Install Boost
+        shell: netbsd {0}
+        run: |
+          uname -a
+          export PKG_PATH="https://ftp.netbsd.org/pub/pkgsrc/packages/NetBSD/x86_64/${{ matrix.pkgsrc_release }}/All;http://ftp.fr.NetBSD.org/pub/pkgsrc/packages/NetBSD/x86_64/${{ matrix.pkgsrc_release }}/All;https://ftp.jaist.ac.jp/pub/pkgsrc/packages/NetBSD/x86_64/${{ matrix.pkgsrc_release }}/All"
+          date
+          pkg_add -u boost
+          rc=$?
+          date
+          echo "pkg_add exit status: $rc"
+          pkg_info | grep -i boost || true
+          exit $rc
+
+  netbsd-control:
+    name: 'NetBSD 11.0, netbsd-vm@v1.5.2 (control)'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Start NetBSD 11.0 VM
+        uses: vmactions/netbsd-vm@v1.5.2
+        with:
+          release: '11.0'
+          mem: 12288
+          sync: no
+          disable-cache: true
+
+      - name: Install Boost
+        shell: netbsd {0}
+        run: |
+          uname -a
+          export PKG_PATH="https://ftp.netbsd.org/pub/pkgsrc/packages/NetBSD/x86_64/11.0_2026Q2/All;http://ftp.fr.NetBSD.org/pub/pkgsrc/packages/NetBSD/x86_64/11.0_2026Q2/All;https://ftp.jaist.ac.jp/pub/pkgsrc/packages/NetBSD/x86_64/11.0_2026Q2/All"
+          date
+          pkg_add -u boost
+          rc=$?
+          date
+          echo "pkg_add exit status: $rc"
+          pkg_info | grep -i boost || true
+          exit $rc
