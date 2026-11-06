@@ -1,0 +1,31 @@
+name: OpenIndiana bash check
+on:
+  push:
+    branches:
+      - 261106-openindiana-bash
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: openindiana {0}
+    steps:
+      - name: Start OpenIndiana VM
+        uses: vmactions/openindiana-vm@v1
+        with:
+          # The plain image, without the build-essential metapackage.
+          release: '202610'
+          sync: no
+          disable-cache: true
+
+      - name: Check for bash
+        run: |
+          uname -a
+          echo "default shell for this step: $0"
+          echo "---"
+          ls -l /usr/bin/bash /bin/bash /usr/bin/sh 2>&1 || true
+          echo "---"
+          command -v bash && bash --version | head -1 || echo "bash: not found"
+          echo "---"
+          pkg list -H shell/bash 2>&1 || true
