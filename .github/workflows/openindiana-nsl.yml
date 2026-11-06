@@ -1,0 +1,58 @@
+name: OpenIndiana libnsl check
+on:
+  push:
+    branches:
+      - 261106-openindiana-nsl
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: openindiana {0}
+    steps:
+      - name: Start OpenIndiana VM
+        uses: vmactions/openindiana-vm@v1
+        with:
+          release: '202610-build'
+          sync: no
+          disable-cache: true
+
+      - name: Which library defines what
+        run: |
+          echo "--- NEEDED of libsocket:"; elfdump -d /usr/lib/64/libsocket.so.1 | grep NEEDED
+          echo "--- NEEDED of libnsl:"; elfdump -d /usr/lib/64/libnsl.so.1 | grep NEEDED
+          for sym in accept getaddrinfo gai_strerror getnameinfo inet_ntop inet_pton inet_addr gethostbyname if_nametoindex getifaddrs; do
+            printf '%-16s' "$sym"
+            for lib in libsocket libnsl libc; do
+              if nm -D /usr/lib/64/$lib.so.1 2>/dev/null | grep -qE "\|$sym$"; then printf ' %s' "$lib"; fi
+            done
+            echo
+          done
+
+      - name: Link test with and without -lnsl
+        run: |
+          cat > t.cpp << 'CPP'
+          #include <arpa/inet.h>
+          #include <netdb.h>
+          #include <sys/socket.h>
+          #include <unistd.h>
+          #include <cstdio>
+          int main() {
+            struct addrinfo* r = nullptr;
+            int rc = getaddrinfo("localhost", "80", nullptr, &r);
+            if (rc) std::puts(gai_strerror(rc)); else freeaddrinfo(r);
+            char buf[64]; in_addr a{}; inet_pton(AF_INET, "127.0.0.1", &a);
+            std::puts(inet_ntop(AF_INET, &a, buf, sizeof buf));
+            hostent* h = gethostbyname("localhost"); (void)h;
+            int s = socket(AF_UNIX, SOCK_STREAM, 0); listen(s, 1); close(s);
+            return 0;
+          }
+          CPP
+          echo "--- g++ t.cpp -lsocket (no -lnsl):"
+          if g++ -std=c++20 t.cpp -o t_socket -lsocket; then ./t_socket; else echo "LINK FAILED without -lnsl"; fi
+          echo "--- g++ t.cpp -lsocket -lnsl:"
+          g++ -std=c++20 t.cpp -o t_both -lsocket -lnsl && ./t_both
+          echo "--- g++ t.cpp -lnsl only:"
+          g++ -std=c++20 t.cpp -o t_nsl -lnsl 2>&1 | tail -3 || true
+          echo "--- ldd t_socket:"; ldd t_socket
