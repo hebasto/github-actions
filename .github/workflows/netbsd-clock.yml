@@ -1,0 +1,130 @@
+name: NetBSD clock
+on:
+  push:
+    branches:
+      - '261112-netbsd-clock'
+  workflow_dispatch:
+    inputs:
+      load_minutes:
+        description: 'How long to keep the guest under load'
+        required: true
+        default: '20'
+        type: string
+
+# Reproduces the VM setup of netbsd.yml in hebasto/bitcoin-core-nightly
+# to find out what steps the guest's wall clock.
+jobs:
+  clock:
+    name: 'NetBSD ${{ matrix.release }}, ntpd ${{ matrix.ntpd }}, ${{ matrix.timecounter }}'
+    runs-on: ubuntu-latest
+    env:
+      LOAD_MINUTES: ${{ inputs.load_minutes || '20' }}
+      CI_NCPU: 4
+    defaults:
+      run:
+        shell: netbsd {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { release: '10.2', ntpd: 'on', timecounter: 'TSC' }
+          - { release: '10.2', ntpd: 'on', timecounter: 'ACPI-Fast' }
+          - { release: '11.1', ntpd: 'on', timecounter: 'TSC' }
+
+    steps:
+      - name: Start NetBSD ${{ matrix.release }} VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          mem: 12288
+          sync: no
+          disable-cache: true
+
+      - name: Host -- QEMU command line and clocksource
+        shell: bash
+        run: |
+          ps -eo args | grep -E '^[^ ]*qemu-system' || true
+          echo "---"
+          cat /sys/devices/system/clocksource/clocksource0/current_clocksource || true
+          ls -l /dev/kvm || true
+          echo "---"
+          cat ~/.ssh/config || true
+
+      - name: Guest -- time configuration
+        run: |
+          uname -a
+          echo "--- timecounters"
+          sysctl kern.timecounter
+          echo "--- rc.conf (ntpd, ntpdate, rdate)"
+          grep -nE 'ntp|rdate' /etc/rc.conf /etc/rc.conf.d/* 2>/dev/null || echo "(no match in /etc/rc.conf)"
+          grep -nE '^(ntpd|ntpdate)' /etc/defaults/rc.conf || true
+          echo "--- /etc/ntp.conf"
+          grep -vE '^[[:space:]]*(#|$)' /etc/ntp.conf 2>/dev/null || echo "(none)"
+          echo "--- processes"
+          ps axww | grep -iE 'ntp|rdate|chrony|openntpd|timed' | grep -v grep || echo "(no time daemon running)"
+          echo "--- cron"
+          crontab -l 2>/dev/null || true
+          grep -rnE 'ntp|rdate|date' /etc/crontab /var/cron/tabs 2>/dev/null || true
+          echo "--- dmesg"
+          dmesg | grep -iE 'clock|timecounter|tsc|hpet|rtc|kvm' || true
+          echo "--- syslog"
+          grep -iE 'ntp|time (reset|step)|adjtime|settimeofday' /var/log/messages || echo "(nothing)"
+
+      - name: Guest -- log clock steps, optionally stop ntpd
+        run: |
+          # Make the kernel log every step of the wall clock.
+          sysctl -w kern.timecounter.timestepwarnings=1
+          sysctl -w kern.timecounter.hardware=${{ matrix.timecounter }}
+          dmesg | grep -i 'TSC' || true
+          if [ "${{ matrix.ntpd }}" = "off" ]; then
+            /etc/rc.d/ntpd onestop
+          fi
+          ps axww | grep -i ntpd | grep -v grep || echo "(ntpd not running)"
+
+      - name: Start guest clock logger
+        run: |
+          # Logs the guest's wall clock once a second, to catch backward steps.
+          nohup sh -c 'while :; do date +%s; sleep 1; done' > /root/guest_clock.log 2>&1 &
+          echo started
+
+      - name: Load the guest and compare its clock with the host's
+        shell: bash
+        run: |
+          set -e
+          # The same parallelism as the functional tests: -j $((CI_NCPU * 2)).
+          # The background jobs must not hold ssh's stdout open, or ssh never returns.
+          ssh netbsd "for i in \$(seq $((CI_NCPU * 2))); do (while :; do :; done) > /dev/null 2>&1 < /dev/null & done; \
+            (while :; do dd if=/dev/zero of=/root/io.tmp bs=1m count=512 2>/dev/null; rm -f /root/io.tmp; done) > /dev/null 2>&1 < /dev/null & \
+            echo load started" < /dev/null
+          end=$(( $(date +%s) + LOAD_MINUTES * 60 ))
+          prev=""
+          printf '%-26s %10s %8s\n' "host time (UTC)" "offset s" "change"
+          while [ "$(date +%s)" -lt "$end" ]; do
+            h0=$(date +%s.%N)
+            g=$(ssh netbsd 'date +%s' < /dev/null)
+            h1=$(date +%s.%N)
+            off=$(echo "$g - ($h0 + $h1) / 2" | bc -l)
+            chg=""
+            if [ -n "$prev" ]; then chg=$(echo "$off - $prev" | bc -l); fi
+            printf '%-26s %10.2f %8s\n' "$(date -u +%H:%M:%S.%N)" "$off" "${chg:+$(printf '%.2f' "$chg")}"
+            prev=$off
+            sleep 5
+          done
+          ssh netbsd 'pkill -f "while :" || true; rm -f /root/io.tmp' < /dev/null || true
+
+      - name: Guest -- backward steps of the wall clock
+        if: always()
+        run: |
+          pkill -f "while :" || true
+          awk 'NR > 1 && $1 < p { printf "backward step at line %d: %d -> %d (%d s)\n", NR, p, $1, $1 - p } NR > 1 && $1 - p > 3 { printf "forward jump at line %d: %d -> %d (+%d s)\n", NR, p, $1, $1 - p } { p = $1 }' /root/guest_clock.log
+          echo "samples: $(wc -l < /root/guest_clock.log)"
+
+      - name: Guest -- syslog and time daemons after the load
+        if: always()
+        run: |
+          ps axww | grep -iE 'ntp|rdate|chrony|timed' | grep -v grep || echo "(no time daemon running)"
+          grep -iE 'ntp|time (reset|step)|adjtime|settimeofday|clock' /var/log/messages || echo "(nothing)"
+          echo "--- dmesg"
+          dmesg | grep -iE 'time|clock' || true
+          echo "--- ntpq"
+          ntpq -pn 2>/dev/null || true
