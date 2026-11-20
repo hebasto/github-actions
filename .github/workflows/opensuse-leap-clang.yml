@@ -7,19 +7,14 @@ on:
 
 jobs:
   install:
-    name: 'Leap ${{ matrix.release }}, ${{ matrix.toolchain }}'
+    name: 'opensuse/leap:${{ matrix.tag }}, ${{ matrix.toolchain }}'
     runs-on: ubuntu-latest
-    container: 'opensuse/leap:${{ matrix.release }}'
+    container: 'opensuse/leap:${{ matrix.tag }}'
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - release: '16.0'
-            toolchain: 'clang llvm'
-          - release: '16.0'
-            toolchain: 'clang19 llvm19'
-          - release: '16.1'
-            toolchain: 'clang llvm'
+        tag: ['16.1', '16', 'latest']
+        toolchain: ['clang llvm']
 
     steps:
       - name: OS release
@@ -46,3 +41,10 @@ jobs:
         run: |
           clang -v
           clang++ -v
+
+      - name: Summary
+        if: always()
+        run: |
+          grep -E '^(PRETTY_NAME|VERSION_ID|CPE_NAME)=' /etc/os-release
+          rpm -q clang libclang13 qt6-tools-devel qt6-tools-qdoc cmake || true
+          clang --version | head -1 || true
