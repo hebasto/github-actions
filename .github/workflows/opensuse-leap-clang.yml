@@ -1,0 +1,43 @@
+name: openSUSE Leap Clang
+on:
+  push:
+    branches:
+      - '261120-opensuse-leap-clang19'
+  workflow_dispatch:
+
+jobs:
+  install:
+    name: 'Leap 16.0, ${{ matrix.name }}'
+    runs-on: ubuntu-latest
+    container: opensuse/leap:16.0
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: 'current (clang llvm)'
+            toolchain: 'clang llvm'
+          - name: 'fix (clang19 llvm19)'
+            toolchain: 'clang19 llvm19'
+
+    steps:
+      - name: Install dependencies
+        run: |
+          zypper --non-interactive install --allow-downgrade gawk boost-devel sqlite3-devel libcapnp-devel capnproto zeromq-devel systemtap-sdt-devel qt6-base-devel qt6-tools-devel qt6-linguist-devel qrencode-devel cmake ninja ${{ matrix.toolchain }}
+
+      - name: Available Clang and LLVM packages
+        if: always()
+        run: |
+          zypper --non-interactive search --details 'clang*' 'llvm*' 'libclang13*' | cat
+
+      - name: Clang executables
+        if: always()
+        run: |
+          ls -l /usr/bin/*clang* /usr/bin/llvm-config* 2>&1 || true
+          for tool in clang clang++ clang-19 clang++-19 clang-21 clang++-21; do
+            printf '%-12s %s\n' "$tool" "$(command -v "$tool" || echo 'not in PATH')"
+          done
+
+      - name: Clang version
+        run: |
+          clang -v
+          clang++ -v
