@@ -7,19 +7,24 @@ on:
 
 jobs:
   install:
-    name: 'Leap 16.0, ${{ matrix.name }}'
+    name: 'Leap ${{ matrix.release }}, ${{ matrix.toolchain }}'
     runs-on: ubuntu-latest
-    container: opensuse/leap:16.0
+    container: 'opensuse/leap:${{ matrix.release }}'
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: 'current (clang llvm)'
+          - release: '16.0'
             toolchain: 'clang llvm'
-          - name: 'fix (clang19 llvm19)'
+          - release: '16.0'
             toolchain: 'clang19 llvm19'
+          - release: '16.1'
+            toolchain: 'clang llvm'
 
     steps:
+      - name: OS release
+        run: cat /etc/os-release
+
       - name: Install dependencies
         run: |
           zypper --non-interactive install --allow-downgrade gawk boost-devel sqlite3-devel libcapnp-devel capnproto zeromq-devel systemtap-sdt-devel qt6-base-devel qt6-tools-devel qt6-linguist-devel qrencode-devel cmake ninja ${{ matrix.toolchain }}
