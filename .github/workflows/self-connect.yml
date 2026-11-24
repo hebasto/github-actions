@@ -1,0 +1,82 @@
+name: Self-connect
+on:
+  push:
+    paths:
+      - '.github/workflows/self-connect.yml'
+      - 'self_connect.py'
+
+concurrency:
+  group: ${{ github.workflow }}${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ubuntu:
+    name: 'Ubuntu 26.04'
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run
+        run: |
+          uname -a
+          python3 --version
+          python3 self_connect.py
+
+  freebsd:
+    name: 'FreeBSD 15.1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run in a VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: '15.1'
+          usesh: true
+          disable-cache: true
+          prepare: pkg install -y python3
+          run: |
+            set -e
+            uname -a
+            python3 --version
+            python3 self_connect.py
+
+  netbsd:
+    name: 'NetBSD 11.1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run in a VM
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: '11.1'
+          usesh: true
+          disable-cache: true
+          prepare: |
+            export PKG_PATH=https://ftp.netbsd.org/pub/pkgsrc/packages/NetBSD/x86_64/11.0_2026Q2/All
+            pkg_add python313
+          run: |
+            set -e
+            uname -a
+            python3.13 --version
+            python3.13 self_connect.py
+
+  openbsd:
+    name: 'OpenBSD 8.0'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run in a VM
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: '8.0'
+          usesh: true
+          disable-cache: true
+          prepare: pkg_add python%3
+          run: |
+            set -e
+            uname -a
+            python3 --version
+            python3 self_connect.py
