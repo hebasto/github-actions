@@ -23,7 +23,10 @@ import time
 TARGET_PORTS = range(11972, 11984)
 CHURN_SECONDS = 30
 CHURN_THREADS = 4
-CHURN_SERVERS = 8
+CHURN_SERVERS = 32
+# Per-thread pause between connections, which caps the rate at about 1000/s.
+CHURN_PAUSE = 0.004
+SOCKET_TIMEOUT = 5
 
 
 def ephemeral_range():
@@ -62,6 +65,7 @@ def part1():
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect(server.getsockname())
         accepted, _ = server.accept()
+        accepted.settimeout(SOCKET_TIMEOUT)
         port = client.getsockname()[1]
         print(f"  connection established:  plain bind: {try_bind(port, False):11}"
               f"  SO_REUSEADDR bind: {try_bind(port, True)}")
@@ -89,20 +93,25 @@ def part2():
             except OSError:
                 return
             # Wait for the client to close first.
-            accepted.recv(1)
+            accepted.settimeout(SOCKET_TIMEOUT)
+            try:
+                accepted.recv(1)
+            except OSError:
+                pass
             accepted.close()
 
     def churn(index):
-        while not stop.is_set():
+        while True:
             for server in servers:
+                if stop.is_set():
+                    return
                 try:
-                    with socket.create_connection(server.getsockname()):
+                    with socket.create_connection(server.getsockname(), timeout=SOCKET_TIMEOUT):
                         connections[index] += 1
                 except OSError as e:
-                    name = errno.errorcode.get(e.errno, str(e.errno))
+                    name = errno.errorcode.get(e.errno, type(e).__name__)
                     connect_errors[name] = connect_errors.get(name, 0) + 1
-                    time.sleep(0.01)
-            time.sleep(0.002)
+                time.sleep(CHURN_PAUSE)
 
     for server in servers:
         threading.Thread(target=accept_loop, args=(server,), daemon=True).start()
@@ -115,7 +124,12 @@ def part2():
     reuseaddr_failures = {}
     first_failure = None
     deadline = time.monotonic() + CHURN_SECONDS
+    next_progress = time.monotonic() + 5
     while time.monotonic() < deadline:
+        if time.monotonic() >= next_progress:
+            next_progress += 5
+            print(f"  ... connections: {sum(connections)}, connect errors: {connect_errors or 'none'}, "
+                  f"plain bind failures: {sum(plain_failures.values())}")
         rounds += 1
         for port in TARGET_PORTS:
             if try_bind(port, False) != "ok":
