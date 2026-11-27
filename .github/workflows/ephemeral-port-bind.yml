@@ -1,0 +1,58 @@
+name: Ephemeral port bind
+on:
+  push:
+    paths:
+      - '.github/workflows/ephemeral-port-bind.yml'
+      - 'ephemeral_port_bind.py'
+  workflow_dispatch:
+
+jobs:
+  linux:
+    name: 'Linux, ${{ matrix.name }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: 'default ephemeral ports'
+            port_range: ''
+          - name: 'ephemeral ports 1024-65535'
+            port_range: '1024 65535'
+    steps:
+      - uses: actions/checkout@v5
+      - name: Widen the ephemeral port range
+        if: matrix.port_range != ''
+        run: sudo sysctl -w net.ipv4.ip_local_port_range="${{ matrix.port_range }}"
+      - run: python3 -u ephemeral_port_bind.py
+
+  freebsd:
+    name: 'FreeBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['14.5', '15.1']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: vmactions/freebsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          usesh: true
+          prepare: pkg install -y python3
+          run: python3 -u ephemeral_port_bind.py
+
+  openbsd:
+    name: 'OpenBSD ${{ matrix.release }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['7.9', '8.0']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: vmactions/openbsd-vm@v1
+        with:
+          release: ${{ matrix.release }}
+          usesh: true
+          prepare: pkg_add python%3
+          run: python3 -u ephemeral_port_bind.py
